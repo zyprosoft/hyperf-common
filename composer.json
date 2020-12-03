@@ -1,7 +1,7 @@
 {
     "name": "zyprosoft/hyperf-common",
     "type": "library",
-    "license": "private",
+    "license": "MIT",
     "keywords": [
         "php",
         "hyperf"
