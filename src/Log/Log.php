@@ -104,16 +104,13 @@ class Log
     private static function getFlowId($message)
     {
         if (!Coroutine::inCoroutine() || !Context::has(ServerRequestInterface::class)) {
-            Log::info('not in coroutine!');
             return $message;
         }
         if (!ApplicationContext::getContainer()->has(RequestInterface::class)) {
-            Log::info('not has request!');
             return $message;
         }
         $request = ApplicationContext::getContainer()->get(RequestInterface::class);
         if (!isset($request)) {
-            Log::info('not set request!');
             return $message;
         }
         $coId = Coroutine::id();
