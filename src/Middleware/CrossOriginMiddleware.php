@@ -42,7 +42,7 @@ class CrossOriginMiddleware implements MiddlewareInterface
         $enableCrossOrigin = $this->config->get('hyperf-common.cors.enable_cross_origin',false);
         if (!$enableCrossOrigin) {
             //不准跨域
-            throw new HttpException(403, "not allowed cross origin");
+            throw new HttpException(403, "not allowed cross origin switch off");
         }
 
         //读取允许跨域域名
@@ -50,7 +50,7 @@ class CrossOriginMiddleware implements MiddlewareInterface
         $configOrigins = $this->config->get("hyperf-common.cors.allow_cross_origins");
         if (!in_array($origin, $configOrigins)) {
             //不准跨域
-            throw new HttpException(403, "not allowed cross origin");
+            throw new HttpException(403, "not allowed cross origin not in whitelist");
         }
 
         //允许跨域
@@ -60,7 +60,11 @@ class CrossOriginMiddleware implements MiddlewareInterface
         $response = $response->withAddedHeader('Access-Control-Allow-Headers', 'DNT,Keep-Alive,User-Agent,Cache-Control,Content-Type,hyperf-session-id');
         Context::set(ResponseInterface::class, $response);
 
-        return  $response;
+        if ($request->getMethod() == 'OPTIONS') {
+            return $response;
+        }
+
+        return  $handler->handle($request);
     }
 
     private function isCorsRequest(ServerRequestInterface $request)
