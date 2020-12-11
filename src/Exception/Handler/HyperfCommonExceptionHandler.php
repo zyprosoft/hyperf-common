@@ -57,8 +57,7 @@ class HyperfCommonExceptionHandler extends ExceptionHandler
 
         if ($throwable instanceof ServerException) {
             Log::error("server exception did get");
-
-            return $this->response->fail($throwable->getCode(), $throwable->getMessage());
+            return $this->response->fail(ErrorCode::SERVER_ERROR, $throwable->getMessage());
         }
 
         if ($throwable instanceof AuthException) {
