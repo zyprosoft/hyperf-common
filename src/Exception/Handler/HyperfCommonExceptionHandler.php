@@ -47,13 +47,17 @@ class HyperfCommonExceptionHandler extends ExceptionHandler
         Log::error($trace);
         Log::req($trace);
 
-        Log::info("exception code:".$throwable->getCode());
+        Log::error("exception code:".$throwable->getCode());
 
         if ($throwable instanceof HyperfCommonException) {
+            Log::error("hyperf common exception did get");
+
             return $this->response->fail($throwable->getCode(), $throwable->getMessage());
         }
 
         if ($throwable instanceof ServerException) {
+            Log::error("server exception did get");
+
             return $this->response->fail($throwable->getCode(), $throwable->getMessage());
         }
 
@@ -71,12 +75,15 @@ class HyperfCommonExceptionHandler extends ExceptionHandler
                 $convertErrors[] = $errorMsg;
             }
             $errorMsg = "param validate error:".implode(';', $convertErrors);
+            Log::error($errorMsg);
 
             return $this->response->fail(ErrorCode::PARAM_ERROR, $errorMsg);
         }
 
         if ($throwable instanceof UnauthorizedException) {
             $errorMsg = "user have no permission do this action or have no token in request!";
+            Log::error($errorMsg);
+
             return $this->response->fail(ErrorCode::PERMISSION_ERROR, $errorMsg);
         }
 
