@@ -96,7 +96,7 @@ class HyperfCommonExceptionHandler extends ExceptionHandler
         }
 
         //打印致命错误信息
-        $logMsg = "throw exception with code:".$throwable->getCode()." detail:".$throwable->getMessage();
+        $logMsg = "throw exception with code:".$code." detail:".$errorMsg;
         Log::error($logMsg);
         Log::req($logMsg);
 
