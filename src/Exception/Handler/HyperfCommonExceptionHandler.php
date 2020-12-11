@@ -47,6 +47,8 @@ class HyperfCommonExceptionHandler extends ExceptionHandler
         Log::error($trace);
         Log::req($trace);
 
+        Log::info("exception code:".$throwable->getCode());
+
         if ($throwable instanceof HyperfCommonException) {
             return $this->response->fail($throwable->getCode(), $throwable->getMessage());
         }
