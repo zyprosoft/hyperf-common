@@ -71,7 +71,6 @@ class Response
             return [];
         }
         $responseParam = [
-            "spanId",
             "seqId",
             "eventId",
         ];
