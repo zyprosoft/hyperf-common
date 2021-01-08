@@ -93,7 +93,7 @@ class HyperfCommonExceptionHandler extends ExceptionHandler
             $code = ErrorCode::SERVER_ERROR;
             $originErrorMsg = $throwable->getMessage();
             $originErrorCode = $throwable->getCode();
-            Log::error('origin error code'.$originErrorCode.'origin error message:'.$originErrorMsg);
+            Log::error('origin error code'.$originErrorCode.' origin error message:'.$originErrorMsg);
             $errorMsg = "Server got an bad internal error!";
         }
 
