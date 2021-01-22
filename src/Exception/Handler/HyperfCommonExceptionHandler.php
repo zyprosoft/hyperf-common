@@ -42,11 +42,6 @@ class HyperfCommonExceptionHandler extends ExceptionHandler
     {
         $this->stopPropagation();
 
-        //记录错误堆栈
-        $trace = $throwable->getTraceAsString();
-        Log::error($trace);
-        Log::req($trace);
-
         Log::error("exception code:".$throwable->getCode());
 
         if ($throwable instanceof HyperfCommonException) {
@@ -93,7 +88,7 @@ class HyperfCommonExceptionHandler extends ExceptionHandler
             $code = ErrorCode::SERVER_ERROR;
             $originErrorMsg = $throwable->getMessage();
             $originErrorCode = $throwable->getCode();
-            Log::error('origin error code'.$originErrorCode.' origin error message:'.$originErrorMsg);
+            Log::error('origin error code: '.$originErrorCode.' origin error message: '.$originErrorMsg);
             $errorMsg = "Server got an bad internal error!";
         }
 
@@ -101,6 +96,11 @@ class HyperfCommonExceptionHandler extends ExceptionHandler
         $logMsg = "throw exception with code:".$code." detail:".$errorMsg;
         Log::error($logMsg);
         Log::req($logMsg);
+
+        //记录错误堆栈
+        $trace = $throwable->getTraceAsString();
+        Log::error($trace);
+        Log::req($trace);
 
         return $this->response->fail($code, $errorMsg);
     }
