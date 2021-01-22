@@ -44,6 +44,11 @@ class HyperfCommonExceptionHandler extends ExceptionHandler
 
         Log::error("exception code:".$throwable->getCode());
 
+        //记录错误堆栈
+        $trace = $throwable->getTraceAsString();
+        Log::error($trace);
+        Log::req($trace);
+
         if ($throwable instanceof HyperfCommonException) {
             Log::error("hyperf common exception did get");
 
@@ -96,11 +101,6 @@ class HyperfCommonExceptionHandler extends ExceptionHandler
         $logMsg = "throw exception with code:".$code." detail:".$errorMsg;
         Log::error($logMsg);
         Log::req($logMsg);
-
-        //记录错误堆栈
-        $trace = $throwable->getTraceAsString();
-        Log::error($trace);
-        Log::req($trace);
 
         return $this->response->fail($code, $errorMsg);
     }
