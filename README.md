@@ -4,7 +4,7 @@
 
 ####ZGW协议接口开发
 三段式接口名：大模块名.控制器.方法
-使用AutoController("prefix=/大模块名/控制器")进行注解之后，
+使用AutoController(prefix="大模块名/控制器")进行注解之后，
 按照ZGW协议请求便可自动调用到对应的方法
 如下示范:ZgwController下使用AutoController(prefix="/common/zgw")进行注解之后便可
 请求到sayHello方法
