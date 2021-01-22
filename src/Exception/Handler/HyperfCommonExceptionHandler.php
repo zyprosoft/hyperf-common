@@ -42,7 +42,7 @@ class HyperfCommonExceptionHandler extends ExceptionHandler
     {
         $this->stopPropagation();
 
-        Log::error("exception code:".$throwable->getCode());
+        Log::error("exception code: ".$throwable->getCode());
 
         //记录错误堆栈
         $trace = $throwable->getTraceAsString();
@@ -61,7 +61,7 @@ class HyperfCommonExceptionHandler extends ExceptionHandler
         }
 
         if ($throwable instanceof AuthException) {
-            Log::error("auth fail:".$throwable->getMessage());
+            Log::error("auth fail: ".$throwable->getMessage());
 
             return $this->response->fail(ErrorCode::AUTH_FAIL, "auth fail!");
         }
@@ -73,7 +73,7 @@ class HyperfCommonExceptionHandler extends ExceptionHandler
                 $errorMsg = $paramName." error description is: ".implode('、', $errors);
                 $convertErrors[] = $errorMsg;
             }
-            $errorMsg = "param validate error:".implode(';', $convertErrors);
+            $errorMsg = "param validate error: ".implode(';', $convertErrors);
             Log::error($errorMsg);
 
             return $this->response->fail(ErrorCode::PARAM_ERROR, $errorMsg);
@@ -98,7 +98,7 @@ class HyperfCommonExceptionHandler extends ExceptionHandler
         }
 
         //打印致命错误信息
-        $logMsg = "throw exception with code:".$code." detail:".$errorMsg;
+        $logMsg = "throw exception with code: ".$code." detail: ".$errorMsg;
         Log::error($logMsg);
         Log::req($logMsg);
 
