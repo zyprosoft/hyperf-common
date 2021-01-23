@@ -7,6 +7,7 @@ use Qbhy\HyperfAuth\Authenticatable;
 use Qbhy\HyperfAuth\AuthManager;
 use Hyperf\Contract\SessionInterface;
 use Psr\SimpleCache\CacheInterface;
+use ZYProSoft\Cache\Cache;
 
 abstract class AbstractService
 {
@@ -36,6 +37,13 @@ abstract class AbstractService
         $this->auth = $container->get(AuthManager::class);
         $this->session = $container->get(SessionInterface::class);
         $this->cache = $container->get(CacheInterface::class);
+    }
+
+    protected function clearCachePrefix(string $prefix)
+    {
+        if ($this->cache instanceof Cache) {
+            $this->cache->clearPrefix($prefix);
+        }
     }
 
     protected function userId()
