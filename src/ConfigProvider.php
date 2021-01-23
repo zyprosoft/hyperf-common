@@ -12,12 +12,14 @@ declare(strict_types=1);
 namespace ZYProSoft;
 use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\HttpServer\CoreMiddleware;
+use Psr\SimpleCache\CacheInterface;
 use ZYProSoft\Log\StdoutLoggerFactory as ZYProSoftStdLoggerFactory;
 use ZYProSoft\Middleware\AppCoreMiddleware as ZYProSoftCoreMiddleware;
 use Hyperf\Validation\Middleware\ValidationMiddleware;
 use ZYProSoft\Middleware\AppValidationMiddleware as ZYValidationMiddleware;
 use Qbhy\HyperfTesting\TestResponse;
 use ZYProSoft\Aspect\TestResponse as ZYTestResponse;
+use ZYProSoft\Cache\Cache as ZYCache;
 
 class ConfigProvider
 {
@@ -29,6 +31,7 @@ class ConfigProvider
                 CoreMiddleware::class => ZYProSoftCoreMiddleware::class,
                 ValidationMiddleware::class => ZYValidationMiddleware::class,
                 TestResponse::class => ZYTestResponse::class,
+                CacheInterface::class => ZYCache::class,
             ],
             'commands' => [
             ],
