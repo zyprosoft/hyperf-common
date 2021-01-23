@@ -18,22 +18,19 @@ class ClearListCacheJob extends Job
 
     protected int $pageCount;
 
-    /**
-     * @var EventDispatcherInterface
-     */
-    protected $eventDispatcher;
-
     public function __construct(string $listener, array $customValues, int $pageSize, int $maxPageCount = 15)
     {
         $this->listener = $listener;
         $this->customValues = $customValues;
         $this->pageSize = $pageSize;
         $this->pageCount = $maxPageCount;
-        $this->eventDispatcher = ApplicationContext::getContainer()->get(EventDispatcherInterface::class);
     }
 
     public function handle()
     {
+        //执行的时候获取dispatcher即可
+        $eventDispatcher = ApplicationContext::getContainer()->get(EventDispatcherInterface::class);
+
         //构建缓存参数列表
         $argumentsList = [];
         for ($index = 0; $index < $this->pageCount; $index++)
@@ -42,9 +39,9 @@ class ClearListCacheJob extends Job
             $argumentsList[] = $argumentItem;
         }
         $listener = $this->listener;
-        array_map(function ($argumentItem) use ($listener) {
+        array_map(function ($argumentItem) use ($listener, $eventDispatcher) {
             $deleteEvent = new DeleteListenerEvent($listener, $argumentItem);
-            $this->eventDispatcher->dispatch($deleteEvent);
+            $eventDispatcher->dispatch($deleteEvent);
         }, $argumentsList);
     }
 }
