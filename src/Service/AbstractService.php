@@ -2,6 +2,7 @@
 declare(strict_types=1);
 
 namespace ZYProSoft\Service;
+use Hyperf\Cache\Listener\DeleteListenerEvent;
 use Psr\Container\ContainerInterface;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Qbhy\HyperfAuth\Authenticatable;
@@ -51,6 +52,29 @@ abstract class AbstractService
         if ($this->cache instanceof Cache) {
             $this->cache->clearPrefix($prefix);
         }
+    }
+
+    /**
+     * 设计的缓存列表接口参数形式必须保证为(int $pageIndex, int $pageSize, ...$customValues)
+     * 否则无法通过这种形式删除列表类型的缓存
+     * @param string $listener
+     * @param array $customValues
+     * @param int $pageSize
+     * @param int $maxPageCount
+     */
+    protected function clearListCacheWithMaxPage(string $listener, array $customValues, int $pageSize, int $maxPageCount = 15)
+    {
+        //构建缓存参数列表
+        $argumentsList = [];
+        for ($index = 0; $index < $maxPageCount; $index++)
+        {
+            $argumentItem = array_merge([$index, $pageSize], $customValues);
+            $argumentsList[] = $argumentItem;
+        }
+        array_map(function ($argumentItem) use ($listener) {
+            $deleteEvent = new DeleteListenerEvent($listener, $argumentItem);
+            $this->eventDispatcher->dispatch($deleteEvent);
+        }, $argumentsList);
     }
 
     protected function userId()
