@@ -6,7 +6,6 @@ namespace ZYProSoft\Cache;
 use Hyperf\AsyncQueue\Job;
 use Hyperf\Utils\ApplicationContext;
 use Psr\SimpleCache\CacheInterface;
-use ZYProSoft\Cache\Cache;
 use ZYProSoft\Log\Log;
 
 class ClearPrefixCacheJob extends Job
