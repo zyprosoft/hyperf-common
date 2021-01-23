@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace ZYProSoft\Service;
 use Psr\Container\ContainerInterface;
+use Psr\EventDispatcher\EventDispatcherInterface;
 use Qbhy\HyperfAuth\Authenticatable;
 use Qbhy\HyperfAuth\AuthManager;
 use Hyperf\Contract\SessionInterface;
@@ -31,12 +32,18 @@ abstract class AbstractService
      */
     protected $session;
 
+    /**
+     * @var EventDispatcherInterface
+     */
+    protected $eventDispatcher;
+
     public function __construct(ContainerInterface $container)
     {
         $this->container = $container;
         $this->auth = $container->get(AuthManager::class);
         $this->session = $container->get(SessionInterface::class);
         $this->cache = $container->get(CacheInterface::class);
+        $this->eventDispatcher = $container->get(EventDispatcherInterface::class);
     }
 
     protected function clearCachePrefix(string $prefix)
