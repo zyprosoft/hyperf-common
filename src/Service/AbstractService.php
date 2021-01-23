@@ -10,6 +10,12 @@ use Qbhy\HyperfAuth\AuthManager;
 use Hyperf\Contract\SessionInterface;
 use Psr\SimpleCache\CacheInterface;
 use ZYProSoft\Cache\Cache;
+use Hyperf\AsyncQueue\Driver\DriverFactory;
+use Hyperf\AsyncQueue\Driver\DriverInterface;
+use Hyperf\AsyncQueue\Job;
+use ZYProSoft\Cache\ClearListCacheJob;
+use ZYProSoft\Cache\ClearPrefixCacheJob;
+use ZYProSoft\Log\Log;
 
 abstract class AbstractService
 {
@@ -38,6 +44,16 @@ abstract class AbstractService
      */
     protected $eventDispatcher;
 
+    /**
+     * @var DriverInterface
+     */
+    protected $driver;
+
+    /**
+     * @var DriverFactory
+     */
+    protected $driverFactory;
+
     public function __construct(ContainerInterface $container)
     {
         $this->container = $container;
@@ -45,13 +61,32 @@ abstract class AbstractService
         $this->session = $container->get(SessionInterface::class);
         $this->cache = $container->get(CacheInterface::class);
         $this->eventDispatcher = $container->get(EventDispatcherInterface::class);
+        $this->driverFactory = $container->get(DriverFactory::class);
+        $this->driver = $this->driverFactory->get('default');
     }
 
+    public function pushWithGroup(string $group, Job $job, int $delay = 0)
+    {
+        $driver = $this->driverFactory->get($group);
+        if (!$driver) {
+            Log::error("drive:$group is not exist!");
+            return;
+        }
+        $driver->push($job, $delay);
+    }
+
+    public function push(Job $job, int $delay = 0)
+    {
+        $this->driver->push($job, $delay);
+    }
+
+    /**
+     * 通过异步任务清除缓存
+     * @param string $prefix
+     */
     protected function clearCachePrefix(string $prefix)
     {
-        if ($this->cache instanceof Cache) {
-            $this->cache->clearPrefix($prefix);
-        }
+        $this->push(new ClearPrefixCacheJob($prefix));
     }
 
     /**
@@ -64,17 +99,7 @@ abstract class AbstractService
      */
     protected function clearListCacheWithMaxPage(string $listener, array $customValues, int $pageSize, int $maxPageCount = 15)
     {
-        //构建缓存参数列表
-        $argumentsList = [];
-        for ($index = 0; $index < $maxPageCount; $index++)
-        {
-            $argumentItem = array_merge([$index, $pageSize], $customValues);
-            $argumentsList[] = $argumentItem;
-        }
-        array_map(function ($argumentItem) use ($listener) {
-            $deleteEvent = new DeleteListenerEvent($listener, $argumentItem);
-            $this->eventDispatcher->dispatch($deleteEvent);
-        }, $argumentsList);
+        $this->push(new ClearListCacheJob($listener, $customValues, $pageSize, $maxPageCount));
     }
 
     protected function userId()
