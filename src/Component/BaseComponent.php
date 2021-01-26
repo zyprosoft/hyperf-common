@@ -17,7 +17,7 @@ use GuzzleHttp\Psr7\Response;
 use GuzzleHttp\Exception\ConnectException;
 use GuzzleHttp\Exception\RequestException;
 
-class BaseComponent
+abstract class BaseComponent
 {
     /**
      * @var ContainerInterface
@@ -128,22 +128,22 @@ class BaseComponent
         };
     }
 
-    public function get(string $uri, $options = [])
+    protected function get(string $uri, $options = [])
     {
         return $this->client->get($uri, $options);
     }
 
-    public function post(string $uri, $options = [])
+    protected function post(string $uri, $options = [])
     {
         return $this->client->post($uri, $options);
     }
 
-    public function success($data = [])
+    protected function success($data = [])
     {
         return ModuleCallResult::success($data);
     }
 
-    public function fail($code, $message = 'fail', $data = [])
+    protected function fail($code, $message = 'fail', $data = [])
     {
         return ModuleCallResult::fail($code, $message, $data);
     }
