@@ -7,6 +7,7 @@ use Hyperf\AsyncQueue\Job;
 use Hyperf\Cache\Listener\DeleteListenerEvent;
 use Hyperf\Utils\ApplicationContext;
 use Psr\EventDispatcher\EventDispatcherInterface;
+use ZYProSoft\Log\Log;
 
 class ClearListCacheJob extends Job
 {
@@ -42,6 +43,7 @@ class ClearListCacheJob extends Job
         array_map(function ($argumentItem) use ($listener, $eventDispatcher) {
             $deleteEvent = new DeleteListenerEvent($listener, $argumentItem);
             $eventDispatcher->dispatch($deleteEvent);
+            Log::info('finish dispatch clear list cache with event:'.json_encode($deleteEvent));
         }, $argumentsList);
     }
 }

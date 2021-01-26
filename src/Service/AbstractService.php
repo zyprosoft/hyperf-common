@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace ZYProSoft\Service;
 use Hyperf\Cache\Listener\DeleteListenerEvent;
+use PhpParser\Node\Expr\Cast\Object_;
 use Psr\Container\ContainerInterface;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Qbhy\HyperfAuth\Authenticatable;
@@ -65,7 +66,13 @@ abstract class AbstractService
         $this->driver = $this->driverFactory->get('default');
     }
 
-    public function pushWithGroup(string $group, Job $job, int $delay = 0)
+    /**
+     * 选择指定分组的队列来执行某个异步任务
+     * @param string $group
+     * @param Job $job
+     * @param int $delay
+     */
+    protected function pushWithGroup(string $group, Job $job, int $delay = 0)
     {
         $driver = $this->driverFactory->get($group);
         if (!$driver) {
@@ -75,9 +82,23 @@ abstract class AbstractService
         $driver->push($job, $delay);
     }
 
-    public function push(Job $job, int $delay = 0)
+    /**
+     * 使用默认分组default队列来执行任务
+     * @param Job $job
+     * @param int $delay
+     */
+    protected function push(Job $job, int $delay = 0)
     {
         $this->driver->push($job, $delay);
+    }
+
+    /**
+     * 分发事件
+     * @param object $event
+     */
+    protected function dispatch(object $event)
+    {
+        $this->eventDispatcher->dispatch($event);
     }
 
     /**
@@ -87,6 +108,17 @@ abstract class AbstractService
     protected function clearCachePrefix(string $prefix)
     {
         $this->push(new ClearPrefixCacheJob($prefix));
+    }
+
+    /**
+     * 清除缓存
+     * @param string $listener
+     * @param array $arguments
+     */
+    protected function clearCache(string $listener, array $arguments)
+    {
+        $deleteEvent = new DeleteListenerEvent($listener, $arguments);
+        $this->dispatch($deleteEvent);
     }
 
     /**
