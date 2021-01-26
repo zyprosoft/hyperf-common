@@ -42,8 +42,8 @@ class ClearListCacheJob extends Job
         $listener = $this->listener;
         array_map(function ($argumentItem) use ($listener, $eventDispatcher) {
             $deleteEvent = new DeleteListenerEvent($listener, $argumentItem);
+            Log::info('will dispatch clear list cache with event:'.json_encode($deleteEvent));
             $eventDispatcher->dispatch($deleteEvent);
-            Log::info('finish dispatch clear list cache with event:'.json_encode($deleteEvent));
         }, $argumentsList);
     }
 }
