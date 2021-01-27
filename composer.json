@@ -18,21 +18,21 @@
         }
     },
     "require": {
-        "hyperf/constants": "~2.0.0",
-        "hyperf/async-queue": "~2.0.0",
-        "hyperf/model-cache": "~2.0.0",
-        "hyperf/validation": "^2.0",
-        "ext-json": "*",
-        "hyperf/logger": "~2.0.0",
-        "96qbhy/hyperf-auth": "^2.2",
-        "hyperf/testing": "^2.0",
+        "hyperf/constants": "2.1.*",
+        "hyperf/async-queue": "2.1.*",
+        "hyperf/model-cache": "2.1.*",
+        "hyperf/validation": "2.1.*",
+        "hyperf/testing": "2.1.*",
+        "hyperf/crontab": "2.1.*",
+        "hyperf/metric": "2.1.*",
+        "hyperf/session": "2.1.*",
+        "hyperf/logger": "2.1.*",
         "qbhy/hyperf-multi-env": "^2.0",
         "qbhy/hyperf-testing": "^1.0",
-        "hyperf/crontab": "^2.0",
-        "hyperf/metric": "^2.0",
-        "hyperf/session": "^2.0",
+        "ext-json": "*",
+        "96qbhy/hyperf-auth": "^2.2",
         "overtrue/wechat": "~5.0",
-        "doctrine/dbal": "^2.6"
+        "doctrine/dbal": "^3.0"
     },
     "require-dev": {
         "swoole/ide-helper": "^4.5",
@@ -40,7 +40,7 @@
         "mockery/mockery": "^1.0",
         "doctrine/common": "^2.9",
         "phpstan/phpstan": "^0.12",
-        "hyperf/devtool": "~2.0.0"
+        "hyperf/devtool": "2.1.*"
     },
     "config": {
         "sort-packages": true,
