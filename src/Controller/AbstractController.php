@@ -9,6 +9,7 @@ use ZYProSoft\Http\Response;
 use Hyperf\Validation\Contract\ValidatorFactoryInterface;
 use ZYProSoft\Constants\ErrorCode;
 use ZYProSoft\Exception\HyperfCommonException;
+use ZYProSoft\Service\PublicFileService;
 
 abstract class AbstractController
 {
@@ -32,12 +33,18 @@ abstract class AbstractController
      */
     protected $validatorFactory;
 
+    /**
+     * @var PublicFileService
+     */
+    protected $publicFileService;
+
     public function __construct(ContainerInterface $container)
     {
         $this->container = $container;
         $this->request = $container->get(Request::class);
         $this->response = $container->get(Response::class);
         $this->validatorFactory = $container->get(ValidatorFactoryInterface::class);
+        $this->publicFileService = $container->get(PublicFileService::class);
     }
 
     /**
@@ -105,41 +112,34 @@ abstract class AbstractController
 
     protected function publicRootPath()
     {
-        return config('server.settings.document_root');
+        return $this->publicFileService->publicRootPath();
     }
 
     protected function createPublicDirIfNotExist()
     {
-        $publicDir = $this->publicRootPath();
-        if (file_exists($publicDir)) {
-            if (!is_dir($publicDir)) {
-                return false;
-            }
-            return true;
-        }
-        return mkdir($publicDir, 0777, true);
+        return $this->publicFileService->createPublicDirIfNotExist();
     }
 
     protected function createPublicSubDirIfNotExist(string $subDir)
     {
-        $subDirPath = $this->publicPath($subDir);
-        if (is_null($subDirPath)) {
-            return false;
-        }
-        if (file_exists($subDirPath)){
-            if (is_dir($subDirPath)) {
-                return true;
-            }
-            return false;
-        }
-        return mkdir($subDirPath, 0777, true);
+        return $this->publicFileService->createPublicSubDirIfNotExist($subDir);
+    }
+
+    protected function publicPath(string $subPath)
+    {
+        return $this->publicFileService->publicPath($subPath);
+    }
+
+    protected function deletePublicPath(string $subPath)
+    {
+        return $this->publicFileService->deletePublicPath($subPath);
     }
 
     protected function moveFileToPublic($fileName, $subDir = null, $autoCreateDir = true)
     {
         if (!isset($subDir)) {
             if ($autoCreateDir) {
-               $result = $this->createPublicDirIfNotExist();
+                $result = $this->createPublicDirIfNotExist();
                 if (!$result) {
                     return false;
                 }
@@ -155,26 +155,5 @@ abstract class AbstractController
             $destination = $this->publicPath($subDir);
         }
         return $this->moveFile($fileName, $destination);
-    }
-
-    protected function publicPath(string $subPath)
-    {
-        $result = $this->createPublicDirIfNotExist();
-        if (!$result) {
-            return null;
-        }
-        return $this->publicRootPath().$subPath;
-    }
-
-    protected function deletePublicPath(string $subPath)
-    {
-        $fullPath = $this->publicPath($subPath);
-        if (!file_exists($fullPath)) {
-            return true;
-        }
-        if (is_dir($fullPath)) {
-            return rmdir($fullPath);
-        }
-        return unlink($fullPath);
     }
 }

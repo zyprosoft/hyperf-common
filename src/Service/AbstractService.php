@@ -61,6 +61,11 @@ abstract class AbstractService
      */
     protected $fileSystemFactory;
 
+    /**
+     * @var PublicFileService
+     */
+    protected $publicFileService;
+
     public function __construct(ContainerInterface $container)
     {
         $this->container = $container;
@@ -71,6 +76,7 @@ abstract class AbstractService
         $this->driverFactory = $container->get(DriverFactory::class);
         $this->driver = $this->driverFactory->get('default');
         $this->fileSystemFactory = $container->get(FilesystemFactory::class);
+        $this->publicFileService = $container->get(PublicFileService::class);
     }
 
     /**
@@ -149,59 +155,6 @@ abstract class AbstractService
     protected function fileQiniu()
     {
         return $this->fileSystemFactory->get('qiniu');
-    }
-
-    protected function publicRootPath()
-    {
-        return config('server.settings.document_root');
-    }
-
-    protected function createPublicDirIfNotExist()
-    {
-        $publicDir = $this->publicRootPath();
-        if (file_exists($publicDir)) {
-            if (!is_dir($publicDir)) {
-                return false;
-            }
-            return true;
-        }
-        return mkdir($publicDir, 0777, true);
-    }
-
-    protected function createPublicSubDirIfNotExist(string $subDir)
-    {
-        $subDirPath = $this->publicPath($subDir);
-        if (is_null($subDirPath)) {
-            return false;
-        }
-        if (file_exists($subDirPath)){
-            if (is_dir($subDirPath)) {
-                return true;
-            }
-            return false;
-        }
-        return mkdir($subDirPath, 0777, true);
-    }
-
-    protected function publicPath(string $subPath)
-    {
-        $result = $this->createPublicDirIfNotExist();
-        if (!$result) {
-            return null;
-        }
-        return $this->publicRootPath().$subPath;
-    }
-
-    protected function deletePublicPath(string $subPath)
-    {
-        $fullPath = $this->publicPath($subPath);
-        if (!file_exists($fullPath)) {
-            return true;
-        }
-        if (is_dir($fullPath)) {
-            return rmdir($fullPath);
-        }
-        return unlink($fullPath);
     }
 
     protected function userId()
