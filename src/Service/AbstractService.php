@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace ZYProSoft\Service;
 use Hyperf\Cache\Listener\DeleteListenerEvent;
+use Hyperf\Filesystem\FilesystemFactory;
 use PhpParser\Node\Expr\Cast\Object_;
 use Psr\Container\ContainerInterface;
 use Psr\EventDispatcher\EventDispatcherInterface;
@@ -55,6 +56,11 @@ abstract class AbstractService
      */
     protected $driverFactory;
 
+    /**
+     * @var FilesystemFactory
+     */
+    protected $fileSystemFactory;
+
     public function __construct(ContainerInterface $container)
     {
         $this->container = $container;
@@ -64,6 +70,7 @@ abstract class AbstractService
         $this->eventDispatcher = $container->get(EventDispatcherInterface::class);
         $this->driverFactory = $container->get(DriverFactory::class);
         $this->driver = $this->driverFactory->get('default');
+        $this->fileSystemFactory = $container->get(FilesystemFactory::class);
     }
 
     /**
@@ -132,6 +139,16 @@ abstract class AbstractService
     protected function clearListCacheWithMaxPage(string $listener, array $customValues, int $pageSize, int $maxPageCount = 15)
     {
         $this->push(new ClearListCacheJob($listener, $customValues, $pageSize, $maxPageCount));
+    }
+
+    protected function fileLocal()
+    {
+        return $this->fileSystemFactory->get('local');
+    }
+
+    protected function fileQiniu()
+    {
+        return $this->fileSystemFactory->get('qiniu');
     }
 
     protected function userId()
