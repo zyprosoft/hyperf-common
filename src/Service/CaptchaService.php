@@ -5,7 +5,6 @@ namespace ZYProSoft\Service;
 use Carbon\Carbon;
 use Psr\SimpleCache\CacheInterface;
 use ZYProSoft\Exception\HyperfCommonException;
-use ZYProSoft\Log\Log;
 use Gregwar\Captcha\CaptchaBuilder;
 use Hyperf\Di\Annotation\Inject;
 use ZYProSoft\Constants\ErrorCode;
