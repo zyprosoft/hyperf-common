@@ -171,4 +171,9 @@ abstract class AbstractService
     {
         return $data;
     }
+
+    protected function clearAllCache()
+    {
+        return $this->cache->clear();
+    }
 }
