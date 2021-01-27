@@ -165,4 +165,16 @@ abstract class AbstractController
         }
         return $this->publicRootPath().$subPath;
     }
+
+    protected function deletePublicPath(string $subPath)
+    {
+        $fullPath = $this->publicPath($subPath);
+        if (!file_exists($fullPath)) {
+            return true;
+        }
+        if (is_dir($fullPath)) {
+            return rmdir($fullPath);
+        }
+        return unlink($fullPath);
+    }
 }
