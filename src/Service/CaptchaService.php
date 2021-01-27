@@ -3,12 +3,15 @@
 
 namespace ZYProSoft\Service;
 use Carbon\Carbon;
+use Hyperf\AsyncQueue\Driver\DriverFactory;
+use Hyperf\AsyncQueue\Driver\DriverInterface;
 use Psr\SimpleCache\CacheInterface;
 use ZYProSoft\Exception\HyperfCommonException;
 use Gregwar\Captcha\CaptchaBuilder;
 use Hyperf\Di\Annotation\Inject;
 use ZYProSoft\Constants\ErrorCode;
 use ZYProSoft\Log\Log;
+use ZYProSoft\Job\ClearCaptchaJob;
 
 class CaptchaService
 {
@@ -38,6 +41,17 @@ class CaptchaService
      * @var CacheInterface
      */
     private CacheInterface $cache;
+
+    /**
+     * @Inject
+     * @var DriverFactory
+     */
+    protected DriverFactory $driverFactory;
+
+    protected function driver()
+    {
+        return $this->driverFactory->get('default');
+    }
 
     protected function saveDir()
     {
@@ -79,7 +93,7 @@ class CaptchaService
     {
         $phrase = $this->cache->get($cacheKey);
         if (is_null($phrase)) {
-            $this->remove($cacheKey);
+            $this->asyncClear($cacheKey);
             throw new HyperfCommonException(ErrorCode::SYSTEM_ERROR_CAPTCHA_EXPIRED);
         }
 
@@ -87,12 +101,17 @@ class CaptchaService
             throw new HyperfCommonException(ErrorCode::SYSTEM_ERROR_CAPTCHA_INVALIDATE);
         }
 
-        $this->remove($cacheKey);
+        $this->asyncClear($cacheKey);
 
         return true;
     }
 
-    private function remove(string $cacheKey)
+    public function asyncClear(string $cacheKey)
+    {
+        $this->driver()->push(new ClearCaptchaJob($cacheKey));
+    }
+
+    public function remove(string $cacheKey)
     {
         $savePath = $this->subDirPath($cacheKey);
         $this->publicFileService->deletePublicPath($savePath);
@@ -105,7 +124,7 @@ class CaptchaService
         if (is_null($phrase)) {
             return $this->get();
         }
-        $this->remove($cacheKey);
+        $this->asyncClear($cacheKey);
         return  $this->get();
     }
 
