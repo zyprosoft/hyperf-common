@@ -113,25 +113,26 @@ class CaptchaService
     {
         $files = scandir($this->publicFileService->publicPath($this->saveDir()));
         if (empty($files)) {
-            Log::info("no captcha file to check expire!");
+            Log::task("no captcha file to check expire!");
             return;
         }
-        Log::info("will check captcha files:".json_encode($files));
+        Log::task("will check captcha files:".json_encode($files));
 
         $expireKeys = [];
         array_map(function (string $filename) use ($expireKeys) {
             $timestamp = substr($filename,strlen($this->prefix()));
             $date = date('Y-m-d H:i:s', $timestamp);
+            Log::task("get an captcha file time:".$date);
             if (Carbon::now()->diffInRealSeconds($date) > $this->ttl()) {
                 $expireKeys[] = $timestamp;
             }
         }, $files);
-        Log::info("will clear expire captcha keys:".json_encode($expireKeys));
+        Log::task("will clear expire captcha keys:".json_encode($expireKeys));
 
         array_map(function (string $expireKey) {
             $cacheKey = $this->prefix().$expireKey;
             $this->remove($cacheKey);
         }, $expireKeys);
-        Log::info("success clear expire captcha!");
+        Log::task("success clear expire captcha!");
     }
 }
