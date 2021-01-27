@@ -135,7 +135,7 @@ abstract class AbstractController
         return mkdir($subDirPath, 0777, true);
     }
 
-    protected function moveFileToPublic($fileName, $autoCreateDir = true, $subDir = null)
+    protected function moveFileToPublic($fileName, $subDir = null, $autoCreateDir = true)
     {
         if (!isset($subDir)) {
             if ($autoCreateDir) {
