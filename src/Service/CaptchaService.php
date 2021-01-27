@@ -9,7 +9,6 @@ use ZYProSoft\Log\Log;
 use Gregwar\Captcha\CaptchaBuilder;
 use Hyperf\Di\Annotation\Inject;
 use ZYProSoft\Constants\ErrorCode;
-use ZYProSoft\Service\PublicFileService;
 
 class CaptchaService
 {
