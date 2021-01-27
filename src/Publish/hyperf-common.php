@@ -8,6 +8,11 @@ return [
             "test" => "abcdefg",
         ]
     ],
+    'captcha' => [
+        'ttl' => 600,
+        'prefix' => 'cpt',
+        'dirname' => '/captcha'
+    ],
     'enable_cross_origin' => env('ENABLE_CROSS_ORIGIN', true),
     'allow_cross_origins' => [
         'http://127.0.0.1',

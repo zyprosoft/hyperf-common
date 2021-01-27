@@ -12,11 +12,20 @@ use ZYProSoft\Constants\ErrorCode;
 
 class CaptchaService
 {
-    private int $ttl = 600;
+   private function ttl()
+   {
+       return config('hyperf-common.captcha.ttl');
+   }
 
-    private string $prefix = 'cpt';
+   private function prefix()
+   {
+       return config('hyperf-common.captcha.prefix');
+   }
 
-    private string $dirname = '/captcha';
+   private function dirname()
+   {
+       return config('hyperf-common.captcha.dirname');
+   }
 
     /**
      * @Inject
@@ -30,24 +39,9 @@ class CaptchaService
      */
     private CacheInterface $cache;
 
-    public function setTTL(int $ttl = 600)
+    protected function saveDir()
     {
-        $this->ttl = $ttl;
-    }
-
-    public function setCachePrefix(string $prefix = 'cpt')
-    {
-        $this->prefix = $prefix;
-    }
-
-    public function setDirname(string $dirname)
-    {
-        $this->dirname = $dirname;
-    }
-
-    public function saveDir()
-    {
-        return $this->dirname.DIRECTORY_SEPARATOR;
+        return $this->dirname().DIRECTORY_SEPARATOR;
     }
 
     public function subDirPath($cacheKey)
@@ -70,12 +64,11 @@ class CaptchaService
         $builder->build();
         $phrase = $builder->getPhrase();
         $time = Carbon::now()->timestamp;
-        $cacheKey = $this->prefix.$time;
+        $cacheKey = $this->prefix().$time;
         $subDirPath = $this->subDirPath($cacheKey);
         $savePath = $this->savePath($cacheKey);
-        Log::info("will save captcha path:$savePath");
         $builder->save($savePath);
-        $this->cache->set($cacheKey, $phrase, $this->ttl);
+        $this->cache->set($cacheKey, $phrase, $this->ttl());
         return [
             'path' => $subDirPath,
             'key' => $cacheKey,
