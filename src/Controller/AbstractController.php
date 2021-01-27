@@ -10,6 +10,7 @@ use Hyperf\Validation\Contract\ValidatorFactoryInterface;
 use ZYProSoft\Constants\ErrorCode;
 use ZYProSoft\Exception\HyperfCommonException;
 use ZYProSoft\Service\PublicFileService;
+use ZYProSoft\Service\CaptchaService;
 
 abstract class AbstractController
 {
@@ -38,6 +39,11 @@ abstract class AbstractController
      */
     protected $publicFileService;
 
+    /**
+     * @var CaptchaService;
+     */
+    protected CaptchaService $captchaService;
+
     public function __construct(ContainerInterface $container)
     {
         $this->container = $container;
@@ -45,6 +51,7 @@ abstract class AbstractController
         $this->response = $container->get(Response::class);
         $this->validatorFactory = $container->get(ValidatorFactoryInterface::class);
         $this->publicFileService = $container->get(PublicFileService::class);
+        $this->captchaService = $container->get(CaptchaService::class);
     }
 
     /**

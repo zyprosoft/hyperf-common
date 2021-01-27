@@ -28,6 +28,7 @@
         "hyperf/session": "~2.1.0",
         "hyperf/logger": "~2.1.0",
         "hyperf/config": "~2.1.0",
+        "hyperf/utils": "~2.1.0",
         "hyperf/filesystem": "~2.1.0",
         "overtrue/flysystem-qiniu": "^1.0",
         "qbhy/hyperf-multi-env": "^2.0",
@@ -35,7 +36,8 @@
         "ext-json": "*",
         "96qbhy/hyperf-auth": "^2.2",
         "overtrue/wechat": "~5.0",
-        "doctrine/dbal": "^3.0"
+        "doctrine/dbal": "^3.0",
+        "gregwar/captcha": "1.*"
     },
     "require-dev": {
         "swoole/ide-helper": "^4.5",

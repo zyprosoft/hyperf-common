@@ -105,4 +105,19 @@ class ErrorCode extends AbstractConstants
      * @Message("USER HAS NO PERMISSION DO THIS ACTION!")
      */
     const PERMISSION_ERROR = 10012;
+
+    /**
+     * @Message ("验证码已过期")
+     */
+    const SYSTEM_ERROR_CAPTCHA_EXPIRED = 10013;
+
+    /**
+     * @Message ("验证码输入错误")
+     */
+    const SYSTEM_ERROR_CAPTCHA_INVALIDATE = 10014;
+
+    /**
+     * @Message ("创建验证码文件夹出错")
+     */
+    const SYSTEM_ERROR_CAPTCHA_DIR_CREATE_FAIL = 10015;
 }

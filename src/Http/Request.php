@@ -3,6 +3,7 @@
 
 namespace ZYProSoft\Http;
 
+use Hyperf\Utils\Arr;
 use ZYProSoft\Constants\Constants;
 use Hyperf\Validation\Request\FormRequest;
 use Qbhy\HyperfAuth\AuthManager;
@@ -54,7 +55,7 @@ class Request extends FormRequest
      */
     public function hasParam(string $key)
     {
-        return isset($this->getParams()[$key]);
+        return Arr::has($this->getParams(), $key);
     }
 
     /**
@@ -68,7 +69,7 @@ class Request extends FormRequest
         if (!$this->hasParam($key)) {
             return $default;
         }
-        return $this->getParams()[$key];
+        return Arr::get($this->getParams(), $key);
     }
 
     public function getUserId()
