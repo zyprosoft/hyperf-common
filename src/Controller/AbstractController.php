@@ -96,10 +96,73 @@ abstract class AbstractController
         return $this->file($fileName)->getExtension();
     }
 
-    protected function moveFile(string $fileName,string $destination)
+    protected function moveFile(string $fileName, string $destination)
     {
         $file = $this->file($fileName);
         $file->moveTo($destination);
         return $file->isMoved();
+    }
+
+    protected function publicRootPath()
+    {
+        return config('server.settings.document_root');
+    }
+
+    protected function createPublicDirIfNotExist()
+    {
+        $publicDir = $this->publicRootPath();
+        if (file_exists($publicDir)) {
+            if (!is_dir($publicDir)) {
+                return false;
+            }
+            return true;
+        }
+        return mkdir($publicDir, 0777, true);
+    }
+
+    protected function createPublicSubDirIfNotExist(string $subDir)
+    {
+        $subDirPath = $this->publicPath($subDir);
+        if (is_null($subDirPath)) {
+            return false;
+        }
+        if (file_exists($subDirPath)){
+            if (is_dir($subDirPath)) {
+                return true;
+            }
+            return false;
+        }
+        return mkdir($subDirPath, 0777, true);
+    }
+
+    protected function moveFileToPublic($fileName, $autoCreateDir = true, $subDir = null)
+    {
+        if (!isset($subDir)) {
+            if ($autoCreateDir) {
+               $result = $this->createPublicDirIfNotExist();
+                if (!$result) {
+                    return false;
+                }
+            }
+            $destination = $this->publicRootPath();
+        }else{
+            if ($autoCreateDir) {
+                $result = $this->createPublicSubDirIfNotExist($subDir);
+                if (!$result) {
+                    return false;
+                }
+            }
+            $destination = $this->publicPath($subDir);
+        }
+        return $this->moveFile($fileName, $destination);
+    }
+
+    protected function publicPath(string $subPath)
+    {
+        $result = $this->createPublicDirIfNotExist();
+        if (!$result) {
+            return null;
+        }
+        return $this->publicRootPath().$subPath;
     }
 }
