@@ -151,16 +151,21 @@ abstract class AbstractService
         return $this->fileSystemFactory->get('qiniu');
     }
 
+    protected function publicRootPath()
+    {
+        return config('server.settings.document_root');
+    }
+
     protected function createPublicDirIfNotExist()
     {
-        $publicDir = config('server.settings.document_root');
+        $publicDir = $this->publicRootPath();
         if (file_exists($publicDir)) {
             if (!is_dir($publicDir)) {
                 return false;
             }
             return true;
         }
-        return mkdir($publicDir);
+        return mkdir($publicDir, 0777, true);
     }
 
     protected function createPublicSubDirIfNotExist(string $subDir)
@@ -184,7 +189,19 @@ abstract class AbstractService
         if (!$result) {
             return null;
         }
-        return config('server.settings.document_root').$subPath;
+        return $this->publicRootPath().$subPath;
+    }
+
+    protected function deletePublicPath(string $subPath)
+    {
+        $fullPath = $this->publicPath($subPath);
+        if (!file_exists($fullPath)) {
+            return true;
+        }
+        if (is_dir($fullPath)) {
+            return rmdir($fullPath);
+        }
+        return unlink($fullPath);
     }
 
     protected function userId()
