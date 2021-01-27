@@ -70,4 +70,36 @@ abstract class AbstractController
     {
         return $this->response->toWeChatXml($result);
     }
+
+    protected function file(string $fileName)
+    {
+        return $this->request->file($fileName);
+    }
+
+    protected function hasFile(string $fileName)
+    {
+        return $this->request->hasFile($fileName);
+    }
+
+    protected function isFileValid(string $fileName)
+    {
+        return $this->file($fileName)->isValid();
+    }
+
+    protected function fileTmpPath(string $fileName)
+    {
+        return $this->file($fileName)->getPath();
+    }
+
+    protected function fileExtension(string $fileName)
+    {
+        return $this->file($fileName)->getExtension();
+    }
+
+    protected function moveFile(string $fileName,string $destination)
+    {
+        $file = $this->file($fileName);
+        $file->moveTo($destination);
+        return $file->isMoved();
+    }
 }
