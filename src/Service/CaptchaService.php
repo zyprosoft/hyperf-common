@@ -78,8 +78,7 @@ class CaptchaService
     {
         $phrase = $this->cache->get($cacheKey);
         if (is_null($phrase)) {
-            $savePath = $this->subDirPath($cacheKey);
-            $this->publicFileService->deletePublicPath($savePath);
+            $this->remove($cacheKey);
             throw new HyperfCommonException(ErrorCode::SYSTEM_ERROR_CAPTCHA_EXPIRED);
         }
 
@@ -87,9 +86,25 @@ class CaptchaService
             throw new HyperfCommonException(ErrorCode::SYSTEM_ERROR_CAPTCHA_INVALIDATE);
         }
 
-        $savePath = $this->subDirPath($cacheKey);
-        $this->publicFileService->deletePublicPath($savePath);
+        $this->remove($cacheKey);
 
         return true;
+    }
+
+    private function remove(string $cacheKey)
+    {
+        $savePath = $this->subDirPath($cacheKey);
+        $this->publicFileService->deletePublicPath($savePath);
+        $this->cache->delete($cacheKey);
+    }
+
+    public function refresh(string $cacheKey)
+    {
+        $phrase = $this->cache->get($cacheKey);
+        if (is_null($phrase)) {
+            return $this->get();
+        }
+        $this->remove($cacheKey);
+        return  $this->get();
     }
 }
