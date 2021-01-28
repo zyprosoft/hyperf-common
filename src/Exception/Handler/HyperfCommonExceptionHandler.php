@@ -55,9 +55,19 @@ class HyperfCommonExceptionHandler extends ExceptionHandler
             return $this->response->fail($throwable->getCode(), $throwable->getMessage());
         }
 
-        if ($throwable instanceof ServerException) {
-            Log::error("server exception did get");
-            return $this->response->fail(ErrorCode::SERVER_ERROR, $throwable->getMessage());
+        if ($throwable instanceof ValidationException) {
+            $convertErrors = [];
+            $outPutParams = [];
+            foreach ($throwable->errors() as $paramName => $errors)
+            {
+                $errorMsg = $paramName." error description is: ".implode('、', $errors);
+                $convertErrors[] = $errorMsg;
+                $outPutParams[] = $paramName;
+            }
+            $errorMsg = "param validate error: ".implode(';', $convertErrors);
+            Log::error($errorMsg);
+            $errorMsg = implode(',',$outPutParams).'参数出现错误';
+            return $this->response->fail(ErrorCode::PARAM_ERROR, $errorMsg);
         }
 
         if ($throwable instanceof AuthException) {
@@ -66,24 +76,16 @@ class HyperfCommonExceptionHandler extends ExceptionHandler
             return $this->response->fail(ErrorCode::AUTH_FAIL, "auth fail!");
         }
 
-        if ($throwable instanceof ValidationException) {
-            $convertErrors = [];
-            foreach ($throwable->errors() as $paramName => $errors)
-            {
-                $errorMsg = $paramName." error description is: ".implode('、', $errors);
-                $convertErrors[] = $errorMsg;
-            }
-            $errorMsg = "param validate error: ".implode(';', $convertErrors);
-            Log::error($errorMsg);
-
-            return $this->response->fail(ErrorCode::PARAM_ERROR, $errorMsg);
-        }
-
         if ($throwable instanceof UnauthorizedException) {
             $errorMsg = "user have no permission do this action or have no token in request!";
             Log::error($errorMsg);
 
             return $this->response->fail(ErrorCode::PERMISSION_ERROR, $errorMsg);
+        }
+
+        if ($throwable instanceof ServerException) {
+            Log::error("server exception did get");
+            return $this->response->fail(ErrorCode::SERVER_ERROR, $throwable->getMessage());
         }
 
         if ($throwable instanceof HttpException) {
