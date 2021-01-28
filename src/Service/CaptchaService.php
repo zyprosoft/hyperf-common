@@ -145,7 +145,9 @@ class CaptchaService
             $timestamp = Str::after($name, $this->prefix());
             $date = Carbon::createFromTimestamp($timestamp);
             Log::task("get an captcha file time:".$date->toString());
-            if (Carbon::now()->diffInRealSeconds($date) > $this->ttl()) {
+            $secondsDidPass = Carbon::now()->diffInRealSeconds($date);
+            Log::task("$filename has been created $secondsDidPass seconds");
+            if ($secondsDidPass > $this->ttl()) {
                 $expireKeys[] = $timestamp;
             }
         }, $files);
