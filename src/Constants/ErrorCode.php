@@ -107,17 +107,17 @@ class ErrorCode extends AbstractConstants
     const PERMISSION_ERROR = 10012;
 
     /**
-     * @Message ("验证码已过期")
+     * @Message ("Captcha expired")
      */
     const SYSTEM_ERROR_CAPTCHA_EXPIRED = 10013;
 
     /**
-     * @Message ("验证码输入错误")
+     * @Message ("Captcha check invalidate")
      */
     const SYSTEM_ERROR_CAPTCHA_INVALIDATE = 10014;
 
     /**
-     * @Message ("创建验证码文件夹出错")
+     * @Message ("Create captcha dir fail")
      */
     const SYSTEM_ERROR_CAPTCHA_DIR_CREATE_FAIL = 10015;
 }
