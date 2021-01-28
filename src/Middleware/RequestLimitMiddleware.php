@@ -69,7 +69,7 @@ class RequestLimitMiddleware implements MiddlewareInterface
         $sessionId = $this->session->getId();
         $cachePrefix = "req_lm";
         $cacheKey = $cachePrefix."_".$sessionId."_".$uri;
-        $ttl = 20;
+        $ttl = $this->config->get('hyperf-common.rate_limit.access_rate_ttl', 20);
         $count = $this->cache->get($cacheKey, 0);
         $limitCount = $this->config->get("hyperf-common.rate_limit.access_rate_limit", 10);
         if ($count > $limitCount) {
