@@ -38,7 +38,7 @@ class LogService
         if (!$hasDir) {
             return false;
         }
-        $items = $this->local()->listFiles('/logs');
+        $items = $this->local()->listContents('/logs');
         if (empty($items)) {
             return false;
         }
@@ -59,9 +59,9 @@ class LogService
             Log::task("has no log files to check clear");
             return;
         }
-        $items = $this->local()->listPaths('/logs');
+        $items = $this->local()->listContents('/logs');
         Log::task("start deal with log files:".json_encode($items));
-
+        return;
         $clearPaths = [];
         array_map(function ($path) use (&$clearPaths) {
             $timestamp = $this->local()->getTimestamp($path);
