@@ -5,7 +5,7 @@ return [
     'zgw' => [
         'force_auth' => env('FORCE_AUTH', false),//强制校验签名,开启后ZGW协议必须带签名参数访问
         'config_list' => [
-            "test" => "abcdefg",
+            "test" => "abcdefg", // appId => appSecret
         ]
     ],
     'captcha' => [

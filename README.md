@@ -27,3 +27,16 @@ curl -d'{
 ####根据需求继承需要鉴权和不需要鉴权的Request
 AdminRequest:需要管理员身份的请求
 AuthedRequest:需要登陆身份的请求
+
+####zgw协议请求内容防篡改
+签名算法:
+在hyperf-common.php配置好appId和appSecret
+第一步:生成当前时间戳timestamp和随机字符串nonce
+第二步:取出协议中的interface.name和param, php eg. ```$name = $reqBody['interface']['name']```;
+第三步:将第一步取出的参数按照如下加入到param, php eg. ```$param['interfaceName'] = $name```;
+第四步:将第二步的param参数按照首字母升序 
+第五步:将第四部参数数组json编码后进行md5编码得到参数字符串paramString
+第六步:按照下面的格式拼接参数:
+appId=$appId&appSecret=$appSecret&nonce=$nonce&timestamp=$timestamp&$paramString;
+第七步:用appSecret和第六步字符串采用sha256算法算出签名
+第八步:将得到的签名使用参数名signature加入到请求协议的外层即可

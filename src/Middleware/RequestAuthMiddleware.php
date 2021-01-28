@@ -6,6 +6,7 @@ namespace ZYProSoft\Middleware;
 
 use Carbon\Carbon;
 use Hyperf\Contract\ConfigInterface;
+use Hyperf\Utils\Arr;
 use Psr\Container\ContainerInterface;
 use ZYProSoft\Constants\Constants;
 use ZYProSoft\Constants\ErrorCode;
@@ -59,12 +60,15 @@ class RequestAuthMiddleware implements MiddlewareInterface
         return $handler->handle($request);
     }
 
-    private function checkSign($requestBody)
+    private function checkSign(array $requestBody)
     {
         $auth = $requestBody["auth"];
         $timestamp = $auth["timestamp"];
         $ttl = $this->config->get("hyperf-common.zgw.sign_ttl", 10);
-        if (Carbon::now()->timestamp - $timestamp > $ttl) {
+        $secondDidPass = Carbon::now()->diffInRealSeconds(Carbon::createFromTimestamp($timestamp));
+        Log::info("sign time did pass $secondDidPass seconds!");
+        if ($secondDidPass > $ttl) {
+            Log::info("sign has expired!");
             throw new HyperfCommonException(ErrorCode::ZGW_AUTH_SIGNATURE_ERROR, "sign expire!");
         }
 
@@ -75,8 +79,8 @@ class RequestAuthMiddleware implements MiddlewareInterface
         }
         $appSecret = $this->appIdSecretList[$appId];
 
-        $param = $requestBody["interface"]["param"];
-        $interfaceName = $requestBody["interface"]["name"];
+        $param = Arr::get($requestBody, 'interface.param');
+        $interfaceName = Arr::get($requestBody, 'interface.name');
         $param["interfaceName"] = $interfaceName;
         ksort($param);
         $paramString = md5(json_encode($param));
