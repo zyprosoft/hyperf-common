@@ -5,6 +5,8 @@ namespace ZYProSoft\Service;
 use Carbon\Carbon;
 use Hyperf\AsyncQueue\Driver\DriverFactory;
 use Hyperf\AsyncQueue\Driver\DriverInterface;
+use Hyperf\Utils\Arr;
+use Hyperf\Utils\Str;
 use Psr\SimpleCache\CacheInterface;
 use ZYProSoft\Exception\HyperfCommonException;
 use Gregwar\Captcha\CaptchaBuilder;
@@ -64,7 +66,7 @@ class CaptchaService
         if (!$result) {
             return  null;
         }
-        return $this->saveDir().$cacheKey;
+        return $this->saveDir().$cacheKey.'.jpeg';
     }
 
     public function savePath($cacheKey)
@@ -139,9 +141,10 @@ class CaptchaService
 
         $expireKeys = [];
         array_map(function (string $filename) use ($expireKeys) {
-            $timestamp = substr($filename,strlen($this->prefix()));
-            $date = date('Y-m-d H:i:s', $timestamp);
-            Log::task("get an captcha file time:".$date);
+            $name = Arr::first(explode('.', $filename));
+            $timestamp = Str::after($name, $this->prefix());
+            $date = Carbon::createFromTimestamp($timestamp);
+            Log::task("get an captcha file time:".$date->toString());
             if (Carbon::now()->diffInRealSeconds($date) > $this->ttl()) {
                 $expireKeys[] = $timestamp;
             }
