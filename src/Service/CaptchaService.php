@@ -140,7 +140,7 @@ class CaptchaService
         Log::task("will check captcha files:".json_encode($files));
 
         $expireKeys = [];
-        array_map(function (string $filename) use ($expireKeys) {
+        array_map(function (string $filename) use (&$expireKeys) {
             $name = Arr::first(explode('.', $filename));
             $timestamp = Str::after($name, $this->prefix());
             $date = Carbon::createFromTimestamp($timestamp);
