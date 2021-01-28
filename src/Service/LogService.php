@@ -5,6 +5,7 @@ namespace ZYProSoft\Service;
 use Carbon\Carbon;
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\Filesystem\FilesystemFactory;
+use Hyperf\Utils\Arr;
 use ZYProSoft\Log\Log;
 
 class LogService
@@ -61,10 +62,11 @@ class LogService
         }
         $items = $this->local()->listContents('/logs');
         Log::task("start deal with log files:".json_encode($items));
-        return;
+
         $clearPaths = [];
-        array_map(function ($path) use (&$clearPaths) {
-            $timestamp = $this->local()->getTimestamp($path);
+        array_map(function (array $file) use (&$clearPaths) {
+            $timestamp = Arr::get($file, 'timestamp');
+            $path = Arr::get($file, 'path');
             $lastDate = Carbon::createFromTimestamp($timestamp);
             $daysDidPass = Carbon::now()->floatDiffInRealDays($lastDate);
             Log::task("$path last modify time has been over $daysDidPass days");
