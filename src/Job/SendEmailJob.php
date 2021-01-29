@@ -28,9 +28,9 @@ class SendEmailJob extends Job
      */
     public function handle()
     {
-        Log::task("begin process send email task:".json_encode($this->emailEntry));
+        Log::info("begin process send email task:".json_encode($this->emailEntry));
         $service = ApplicationContext::getContainer()->get(EmailService::class);
         $service->sendEmail($this->emailEntry);
-        Log::task("async success send email:".json_encode($this->emailEntry));
+        Log::info("async success send email:".json_encode($this->emailEntry));
     }
 }
