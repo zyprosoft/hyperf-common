@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\Filesystem\FilesystemFactory;
 use Hyperf\Utils\Arr;
+use Hyperf\Utils\Str;
 use ZYProSoft\Log\Log;
 
 class LogService
@@ -67,6 +68,10 @@ class LogService
         array_map(function (array $file) use (&$clearPaths) {
             $timestamp = Arr::get($file, 'timestamp');
             $path = Arr::get($file, 'path');
+            if (Str::endsWith($path, '.log') == false) {
+                Log::info("not a log file:$path");
+                return;
+            }
             $lastDate = Carbon::createFromTimestamp($timestamp);
             $daysDidPass = Carbon::now()->floatDiffInRealDays($lastDate);
             Log::task("$path last modify time has been over $daysDidPass days");
