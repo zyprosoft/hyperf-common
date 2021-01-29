@@ -93,6 +93,8 @@ class RequestAuthMiddleware implements MiddlewareInterface
         $signature = hash_hmac("sha256", $base, $appSecret);
         if ($signature != $paramSignature) {
             Log::error("signature check fail!");
+            Log::info("server sign:$signature");
+            Log::info("client sign:$paramSignature");
 
             throw new HyperfCommonException(ErrorCode::ZGW_AUTH_SIGNATURE_ERROR);
         }
