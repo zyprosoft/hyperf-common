@@ -12,6 +12,12 @@ class SendEmailJob extends Job
 {
     private EmailEntry $emailEntry;
 
+    /**
+     * 最大重试次数
+     * @var int
+     */
+    protected $maxAttempts = 3;
+
     public function __construct(EmailEntry $emailEntry)
     {
         $this->emailEntry = $emailEntry;
@@ -22,8 +28,9 @@ class SendEmailJob extends Job
      */
     public function handle()
     {
+        Log::task("begin process send email task:".json_encode($this->emailEntry));
         $service = ApplicationContext::getContainer()->get(EmailService::class);
         $service->sendEmail($this->emailEntry);
-        Log::info("async success send email:".json_encode($this->emailEntry));
+        Log::task("async success send email:".json_encode($this->emailEntry));
     }
 }
