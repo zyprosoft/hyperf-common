@@ -17,6 +17,10 @@ use ZYProSoft\Job\ClearCaptchaJob;
 
 class CaptchaService
 {
+    const DIR_NAME_CURRENT = '.';
+
+    const DIR_NAME_LAST_LEVEL = '..';
+
    private function ttl()
    {
        return config('hyperf-common.captcha.ttl');
@@ -141,6 +145,10 @@ class CaptchaService
 
         $expireKeys = [];
         array_map(function (string $filename) use (&$expireKeys) {
+            if ($filename == self::DIR_NAME_CURRENT || $filename == self::DIR_NAME_LAST_LEVEL) {
+                Log::info("no need deal system file name :$filename");
+                return;
+            }
             $name = Arr::first(explode('.', $filename));
             $timestamp = Str::after($name, $this->prefix());
             $date = Carbon::createFromTimestamp($timestamp);
