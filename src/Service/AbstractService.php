@@ -4,19 +4,19 @@ declare(strict_types=1);
 namespace ZYProSoft\Service;
 use Hyperf\Cache\Listener\DeleteListenerEvent;
 use Hyperf\Filesystem\FilesystemFactory;
-use PhpParser\Node\Expr\Cast\Object_;
 use Psr\Container\ContainerInterface;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Qbhy\HyperfAuth\Authenticatable;
 use Qbhy\HyperfAuth\AuthManager;
 use Hyperf\Contract\SessionInterface;
 use Psr\SimpleCache\CacheInterface;
-use ZYProSoft\Cache\Cache;
 use Hyperf\AsyncQueue\Driver\DriverFactory;
 use Hyperf\AsyncQueue\Driver\DriverInterface;
 use Hyperf\AsyncQueue\Job;
 use ZYProSoft\Cache\ClearListCacheJob;
 use ZYProSoft\Cache\ClearPrefixCacheJob;
+use ZYProSoft\Entry\EmailEntry;
+use ZYProSoft\Job\SendEmailJob;
 use ZYProSoft\Log\Log;
 
 abstract class AbstractService
@@ -66,6 +66,11 @@ abstract class AbstractService
      */
     protected $publicFileService;
 
+    /**
+     * @var EmailService
+     */
+    protected EmailService $emailService;
+
     public function __construct(ContainerInterface $container)
     {
         $this->container = $container;
@@ -77,6 +82,7 @@ abstract class AbstractService
         $this->driver = $this->driverFactory->get('default');
         $this->fileSystemFactory = $container->get(FilesystemFactory::class);
         $this->publicFileService = $container->get(PublicFileService::class);
+        $this->emailService = $container->get(EmailService::class);
     }
 
     /**
@@ -175,5 +181,15 @@ abstract class AbstractService
     protected function clearAllCache()
     {
         return $this->cache->clear();
+    }
+
+    protected function sendEmail(EmailEntry $emailEntry)
+    {
+        $this->emailService->sendEmail($emailEntry, false);
+    }
+
+    protected function asyncSendEmail(EmailEntry $emailEntry)
+    {
+        $this->push(new SendEmailJob($emailEntry));
     }
 }
