@@ -66,12 +66,12 @@ class LogService
 
         $clearPaths = [];
         array_map(function (array $file) use (&$clearPaths) {
-            $timestamp = Arr::get($file, 'timestamp');
             $path = Arr::get($file, 'path');
             if (Str::endsWith($path, '.log') == false) {
                 Log::info("not a log file:$path");
                 return;
             }
+            $timestamp = Arr::get($file, 'timestamp');
             $lastDate = Carbon::createFromTimestamp($timestamp);
             $daysDidPass = Carbon::now()->floatDiffInRealDays($lastDate);
             Log::task("$path last modify time has been over $daysDidPass days");
