@@ -24,4 +24,21 @@ class EmailEntry
     public string $body;//邮件内容
 
     public string $altBody;//当邮件客户端不支持Html时候的备用显示内容
+
+    public function isValidate()
+    {
+        if (!isset($this->from)) {
+            return false;
+        }
+
+        if (!empty($this->receivers)) {
+            return false;
+        }
+
+        if (!isset($this->subject) || !isset($this->body)) {
+            return false;
+        }
+
+        return true;
+    }
 }
