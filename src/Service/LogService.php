@@ -40,8 +40,12 @@ class LogService
         if (!$hasDir) {
             return false;
         }
-        $items = $this->local()->listContents('/logs');
-        if (empty($items)) {
+        $items = collect($this->local()->listContents('/logs'));
+        $items->filter(function (array $item) {
+            $systemFiles = ['.','..'];
+            return !in_array($item['filename'], $systemFiles);
+        });
+        if ($items->isEmpty()) {
             return false;
         }
         return true;
