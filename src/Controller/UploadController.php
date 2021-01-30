@@ -63,11 +63,8 @@ class UploadController extends AbstractController
                 break;
             }
             if (Str::endsWith($limitType, '*')) {
-                $type = Str::before($limitType, '*');
-                $type = str_replace('/', '\/', $type);
-                $pattern = '^'.$type.'\w+$';
-                Log::info("check mimetype use pattern:".$pattern);
-                if (Str::is($pattern, $mimeType)) {
+                Log::info("check mimetype use pattern:".$limitType);
+                if (Str::is($limitType, $mimeType)) {
                     $isMimeValidate = true;
                 }
             }else{
@@ -84,7 +81,7 @@ class UploadController extends AbstractController
 
         $systemType = config('hyperf-common.upload.system_type');
         if ($systemType == Constants::UPLOAD_SYSTEM_TYPE_LOCAL) {
-            if (Str::is('^image\/\w+$', $mimeType)) {
+            if (Str::is('image/*', $mimeType)) {
                 $localDir = config('hyperf-common.upload.local.image_dir');
             }else{
                 $localDir = config('hyperf-common.upload.local.common_dir');
