@@ -64,7 +64,8 @@ class UploadController extends AbstractController
             }
             if (Str::endsWith($limitType, '*')) {
                 $type = Str::before($limitType, '*');
-                $pattern = '/^'.$type.'\w+$/';
+                $type = str_replace('/', '\/', $type);
+                $pattern = '^'.$type.'\w+$';
                 Log::info("check mimetype use pattern:".$pattern);
                 if (Str::is($pattern, $mimeType)) {
                     $isMimeValidate = true;
@@ -83,7 +84,7 @@ class UploadController extends AbstractController
 
         $systemType = config('hyperf-common.upload.system_type');
         if ($systemType == Constants::UPLOAD_SYSTEM_TYPE_LOCAL) {
-            if (Str::is('/^image/\w+$/', $mimeType)) {
+            if (Str::is('^image\/\w+$', $mimeType)) {
                 $localDir = config('hyperf-common.upload.local.image_dir');
             }else{
                 $localDir = config('hyperf-common.upload.local.common_dir');
@@ -100,7 +101,7 @@ class UploadController extends AbstractController
                 'url' => $publicImageUrl
             ]);
         }
-        //不传本地就传七牛云，其他的太贵了
+        //不传本地就传七牛云，其他的后面再说吧
         $result = $this->service->uploadLocalFileToQiniu($file->getRealPath());
         return $this->success($result);
     }
