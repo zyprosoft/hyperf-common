@@ -114,7 +114,12 @@ abstract class AbstractController
     protected function moveFile(string $fileName, string $destination)
     {
         $file = $this->file($fileName);
-        return $file->moveTo($destination);
+        $file->moveTo($destination);
+        $isMoved = $file->isMoved();
+        if (!$isMoved) {
+            return false;
+        }
+        return chmod($destination,0744);
     }
 
     protected function publicRootPath()

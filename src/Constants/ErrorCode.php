@@ -120,4 +120,30 @@ class ErrorCode extends AbstractConstants
      * @Message ("Create captcha dir fail")
      */
     const SYSTEM_ERROR_CAPTCHA_DIR_CREATE_FAIL = 10015;
+
+    /**
+     * @Message ("Qiniu upload config not set")
+     */
+    const SYSTEM_ERROR_QINIU_UPLOAD_CONFIG_NOT_SET = 10016;
+
+    /**
+     * @Message ("No upload file found")
+     */
+    const SYSTEM_ERROR_NO_UPLOAD_FILE_FOUND = 10017;
+
+    /**
+     * @Message ("Upload move file fail!")
+     */
+    const SYSTEM_ERROR_UPLOAD_MOVE_FILE_FAIL = 10018;
+
+    /**
+     * @Message ("Upload file size too big!")
+     */
+    const SYSTEM_ERROR_UPLOAD_FILE_SIZE_TOO_BIG = 10019;
+
+    /**
+     * @Message ("Upload file mime type is not allowed!")
+     */
+    const SYSTEM_ERROR_UPLOAD_FILE_MIME_NOT_ALLOWED= 10020;
+
 }
