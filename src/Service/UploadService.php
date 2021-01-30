@@ -25,9 +25,8 @@ class UploadService extends AbstractService
     {
         $accessKey = config('file.qiniu.accessKey');
         $secretKey = config('file.qiniu.secretKey');
-        $domain = config('file.qiniu.domain');
         $bucket = config('file.qiniu.bucket');
-        if (empty($accessKey) || empty($secretKey) || empty($domain) || empty($bucket)) {
+        if (empty($accessKey) || empty($secretKey) || empty($bucket)) {
             throw new HyperfCommonException(ErrorCode::SYSTEM_ERROR_QINIU_UPLOAD_CONFIG_NOT_SET);
         }
         $auth = new Auth($accessKey, $secretKey);
