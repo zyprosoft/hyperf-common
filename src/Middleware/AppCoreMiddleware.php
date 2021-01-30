@@ -4,6 +4,7 @@
 namespace ZYProSoft\Middleware;
 
 use Hyperf\Contract\ConfigInterface;
+use Hyperf\Utils\Arr;
 use Psr\Container\ContainerInterface;
 use ZYProSoft\Constants\Constants;
 use ZYProSoft\Constants\ErrorCode;
@@ -15,7 +16,7 @@ use Hyperf\HttpServer\CoreMiddleware;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
-use ZYProSoft\Http\Response;
+use function json_decode;
 
 class AppCoreMiddleware extends CoreMiddleware
 {
@@ -33,10 +34,11 @@ class AppCoreMiddleware extends CoreMiddleware
     //识别特殊请求返回
     public function specialDispatch(ServerRequestInterface $request)
     {
-        Log::info("uri:".$request->getUri()->getPath());
+        $path = $request->getUri()->getPath();
+        Log::info("request path:".$path);
 
         //识别微信请求
-        if ($request->getUri()->getPath() == '/weixin') {
+        if ($path == '/weixin') {
 
             Log::info("request headers:".json_encode($request->getHeaders()));
             if (strtoupper($request->getMethod()) == 'POST') {
@@ -103,6 +105,7 @@ class AppCoreMiddleware extends CoreMiddleware
     {
         //打印任意到达的请求
         Log::info("request uri:".$request->getUri()->getPath()." headers:".json_encode($request->getHeaders()));
+        Log::info("request body:".$request->getBody());
 
         //增加请求ID
         $remoteAddress = $this->getRemoteAddress($request);
@@ -115,9 +118,8 @@ class AppCoreMiddleware extends CoreMiddleware
         $sessionName = $this->config->get("session.options.session_name","HYPERF_SESSION_ID");
         $sessionId = null;
         if (strtoupper($request->getMethod()) == 'POST') {
-            $requestBody = json_decode($request->getBody(), true);
-            if ($requestBody && isset($requestBody["token"])) {
-                $token = $requestBody["token"];
+            $token = data_get($request->getParsedBody(), 'token');
+            if (isset($token)) {
                 $sessionId = Session::token2SessionId($token);
             }
         }else{
@@ -135,6 +137,89 @@ class AppCoreMiddleware extends CoreMiddleware
             Log::info("core set session id:$sessionId");
             $request = $request->withCookieParams([$sessionName=>$sessionId]);
             Log::info("modify cookie params result:".json_encode($request->getCookieParams()));
+        }
+
+        //识别上传请求
+        if ($request->getUri()->getPath() == '/upload') {
+            //重新解析获取参数
+            $requestBody = $request->getParsedBody();
+            if (!isset($requestBody) || empty($requestBody)) {
+                Log::info("upload request , but not a zgw protocol request!");
+                return  parent::dispatch($request);
+            }
+            $interfaceValue = data_get($requestBody, 'interface');
+            if (!isset($interfaceValue)) {
+                Log::info("upload can't find interface param array");
+                return parent::dispatch($request);
+            }
+            $interface = json_decode($interfaceValue, true);
+            if ($interface === false) {
+                Log::info("upload can't decode interface param as json object");
+                return parent::dispatch($request);
+            }
+            //修改请求body
+            data_set($requestBody,'interface', $interface);
+            //检查是不是zgw协议
+            $interfaceName = Arr::get($interface,'name');
+            $param = Arr::get($interface, 'param');
+            if (!isset($interfaceName) || !isset($param)) {
+                Log::info("upload maybe a zgw request but have error interface content!");
+                return  parent::dispatch($request);
+            }
+            //zgw协议
+            $interfaceArray = explode('.', $interfaceName);
+            if (count($interfaceArray) != 3) {
+                throw new HyperfCommonException(ErrorCode::PARAM_ERROR, "zgw interfaceName is not validate");
+            }
+            Log::info("check request zgw protocol success, begin dispatch upload request");
+            //强制参数校验
+            $checkParamExist = ["seqId","eventId","version","timestamp","caller"];
+            array_map(function ($paramName) use ($request) {
+                $value = data_get($request->getParsedBody(), $paramName);
+                if (!isset($value)) {
+                    throw new HyperfCommonException(ErrorCode::ZGW_REQUEST_BODY_ERROR,"zgw request body need param $paramName");
+                }
+            },$checkParamExist);
+            //如果开启了强制签名校验
+            $forceCheckAuth = $this->config->get("hyperf-common.zgw.force_auth");
+            $authValues = data_get($requestBody, 'auth');
+            if ($forceCheckAuth && !isset($authValues)) {
+                throw  new HyperfCommonException(ErrorCode::ZGW_REQUEST_BODY_ERROR, "zgw force auth need param auth!");
+            }
+            $authParams = json_decode($authValues, true);
+            if ($forceCheckAuth && $authParams === false) {
+                Log::error("upload request decode auth param fail!");
+                throw  new HyperfCommonException(ErrorCode::ZGW_REQUEST_BODY_ERROR, "zgw force auth need param auth!");
+            }
+
+            //如果存在数据签名
+            if ($authParams !== false) {
+                data_set($requestBody,'auth', $authParams);
+                $checkAuthParamExist = ["signature","appId","timestamp","nonce"];
+                array_map(function ($paramName) use ($authParams) {
+                    if (!isset($authParams[$paramName])) {
+                        throw new HyperfCommonException(ErrorCode::ZGW_REQUEST_BODY_ERROR,"zgw request body auth need param $paramName");
+                    }
+                },$checkAuthParamExist);
+            }
+
+            $seqId = data_get($requestBody, "seqId");
+            $eventId = data_get($requestBody, "eventId");
+            $reqId .= "-$seqId-$eventId";
+            $request = $request->withHeader(Constants::ZYPOSOFT_REQ_ID, $reqId);
+            //修改请求的body,把是json字符串的解析出来回给request使用
+            $request->withParsedBody($requestBody);
+
+            //转换成框架的AutoController形式访问接口方法
+            //三段表示：大模块名.Controller.Action;大模块通常可以用来标记是哪个大的模块，如管理端可以用Admin
+            //需要使用AutoController的"/admin/user/login"这种形式,所以，接口controller必须要设置prefix="/{$interfaceArray[0]}/{$interfaceArray[1]}"
+            //才能正常访问到接口方法
+            $newPath = "/".$interfaceArray[0]."/".$interfaceArray[1]."/".$interfaceArray[2];
+            Log::info("upload request will convert zgw to auto path:$newPath");
+            $request = $this->modifyRequestWithPath($request, $newPath);
+            $request = $request->withAddedHeader(Constants::ZYPROSOFT_ZGW, "zgw");
+
+            return parent::dispatch($request);
         }
 
         //处理特殊请求
