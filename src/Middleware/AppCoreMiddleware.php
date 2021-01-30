@@ -208,7 +208,7 @@ class AppCoreMiddleware extends CoreMiddleware
             $reqId .= "-$seqId-$eventId";
             $request = $request->withHeader(Constants::ZYPOSOFT_REQ_ID, $reqId);
             //修改请求的body,把是json字符串的解析出来回给request使用
-            $request->withParsedBody($requestBody);
+            $request = $request->withParsedBody($requestBody);
             Log::info("upload request after modify parsed body :".json_encode($requestBody));
 
             //转换成框架的AutoController形式访问接口方法
