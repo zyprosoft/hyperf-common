@@ -35,8 +35,29 @@ AuthedRequest:需要登陆身份的请求
 第二步:取出协议中的interface.name和param, php eg. ```$name = $reqBody['interface']['name']```;
 第三步:将第一步取出的参数按照如下加入到param, php eg. ```$param['interfaceName'] = $name```;
 第四步:将第二步的param参数按照首字母升序 
-第五步:将第四部参数数组json编码后进行md5编码得到参数字符串paramString,注意这里json编码不要主动编码为Unicode,中文需要保持原样
+第五步:将第四部参数数组json编码后进行md5编码得到参数字符串paramString,注意这里json编码不要主动编码为Unicode,不转义/字符
 第六步:按照下面的格式拼接参数:
 appId=$appId&appSecret=$appSecret&nonce=$nonce&timestamp=$timestamp&$paramString;
 第七步:用appSecret和第六步字符串采用sha256算法算出签名
 第八步:将得到的签名使用参数名signature加入到请求协议的外层即可
+
+参考请求包
+```php
+curl -d'{
+    "auth":{
+       "timestamp":1601017327,
+       "nonce":"1601017327",
+       "appId":"test",
+       "signature":"xxasdfsfdsfffg"
+    },
+    "version":"1.0",
+    "seqId":"xxxxx",
+    "timestamp":1601017327,
+    "eventId":1601017327,
+    "caller":"test",
+    "interface":{
+        "name":"common.zgw.sayHello",
+        "param":{}
+    }
+}' http://127.0.0.1:9506
+```
