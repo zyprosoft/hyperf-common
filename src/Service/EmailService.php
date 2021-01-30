@@ -31,14 +31,14 @@ class EmailService
 
     public function sendEmail(EmailEntry $emailEntry, bool $isInTask = true)
     {
-        if (!$emailEntry || !$emailEntry->isValidate()) {
-            Log::error("email entry is not validate to send!");
-            return ;
-        }
-        
         $logger = Log::logger('task');
         if (!$isInTask) {
             $logger = Log::logger('default');
+        }
+
+        if (!$emailEntry || !$emailEntry->isValidate()) {
+            $logger->error("email entry is not validate to send!");
+            return false;
         }
 
         $mail = $this->mailer();
