@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace ZYProSoft\Controller;
 
+use Hyperf\Utils\Str;
 use ZYProSoft\Http\Request;
 use Hyperf\Contract\ContainerInterface;
 use ZYProSoft\Http\Response;
@@ -113,8 +114,7 @@ abstract class AbstractController
     protected function moveFile(string $fileName, string $destination)
     {
         $file = $this->file($fileName);
-        $file->moveTo($destination);
-        return $file->isMoved();
+        return $file->moveTo($destination);
     }
 
     protected function publicRootPath()
@@ -142,8 +142,11 @@ abstract class AbstractController
         return $this->publicFileService->deletePublicPath($subPath);
     }
 
-    protected function moveFileToPublic($fileName, $subDir = null, $autoCreateDir = true)
+    protected function moveFileToPublic(string $fileName, string $subDir = null, string $fileRename = null,  $autoCreateDir = true)
     {
+        if (!isset($fileRename)) {
+            $fileRename = Str::random(6);
+        }
         if (!isset($subDir)) {
             if ($autoCreateDir) {
                 $result = $this->createPublicDirIfNotExist();
@@ -151,7 +154,7 @@ abstract class AbstractController
                     return false;
                 }
             }
-            $destination = $this->publicRootPath();
+            $destination = $this->publicRootPath().DIRECTORY_SEPARATOR.$fileRename;
         }else{
             if ($autoCreateDir) {
                 $result = $this->createPublicSubDirIfNotExist($subDir);
@@ -159,7 +162,7 @@ abstract class AbstractController
                     return false;
                 }
             }
-            $destination = $this->publicPath($subDir);
+            $destination = $this->publicPath($subDir).DIRECTORY_SEPARATOR.$fileRename;
         }
         return $this->moveFile($fileName, $destination);
     }
