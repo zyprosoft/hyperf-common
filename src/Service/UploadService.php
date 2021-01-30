@@ -8,6 +8,7 @@ use Overtrue\Flysystem\Qiniu\QiniuAdapter;
 use ZYProSoft\Constants\ErrorCode;
 use Qiniu\Auth;
 use ZYProSoft\Exception\HyperfCommonException;
+use ZYProSoft\Log\Log;
 
 class UploadService extends AbstractService
 {
@@ -44,7 +45,7 @@ class UploadService extends AbstractService
         if (!$result) {
             throw new HyperfCommonException(ErrorCode::SYSTEM_ERROR_UPLOAD_MOVE_FILE_FAIL, "upload move file to qiniu fail!");
         }
-        $adapter = $this->fileQiniu();
+        $adapter = $this->fileQiniu()->getAdapter();
         if ($adapter instanceof QiniuAdapter) {
             return $adapter->getUrl($fileName);
         }
