@@ -112,7 +112,7 @@ class AppCoreMiddleware extends CoreMiddleware
         $remotePort = $this->getRemotePort($request);
         $random = microtime(true)*10000;
         $reqId = "($remoteAddress:$remotePort)-$random";
-        $request = $request->withAddedHeader(Constants::ZYPOSOFT_REQ_ID, $reqId);
+        $request = $request->withAddedHeader(Constants::ZYPROSOFT_REQ_ID, $reqId);
 
         //根据会话的token创建sessionID信息
         $sessionName = $this->config->get("session.options.session_name","HYPERF_SESSION_ID");
@@ -206,7 +206,8 @@ class AppCoreMiddleware extends CoreMiddleware
             $seqId = data_get($requestBody, "seqId");
             $eventId = data_get($requestBody, "eventId");
             $reqId .= "-$seqId-$eventId";
-            $request = $request->withHeader(Constants::ZYPOSOFT_REQ_ID, $reqId);
+            $request = $request->withHeader(Constants::ZYPROSOFT_REQ_ID, $reqId);
+            $request = $request->withHeader(Constants::ZYPROSOFT_UPLOAD, "1");
             //修改请求的body,把是json字符串的解析出来回给request使用
             $request = $request->withParsedBody($requestBody);
             Log::info("upload request after modify parsed body :".json_encode($requestBody));
@@ -297,7 +298,7 @@ class AppCoreMiddleware extends CoreMiddleware
         $seqId = $requestBody["seqId"];
         $eventId = $requestBody["eventId"];
         $reqId .= "-$seqId-$eventId";
-        $request = $request->withHeader(Constants::ZYPOSOFT_REQ_ID, $reqId);
+        $request = $request->withHeader(Constants::ZYPROSOFT_REQ_ID, $reqId);
 
         //转换成框架的AutoController形式访问接口方法
         //三段表示：大模块名.Controller.Action;大模块通常可以用来标记是哪个大的模块，如管理端可以用Admin
@@ -321,7 +322,14 @@ class AppCoreMiddleware extends CoreMiddleware
         }else{
             $params = json_encode($request->getQueryParams());
         }
-        $msg = "http request start remote info:".json_encode($serverParam)."  params:".$params." headers:".json_encode($request->getHeaders());
+        $uploadTag = $request->getHeaderLine(Constants::ZYPROSOFT_UPLOAD);
+        if (!empty($uploadTag)) {
+            $parsedParams = $request->getParsedBody();
+            Log::info("this is an upload request, switch to record parsed body instead!");
+            $msg = "http request start remote info:".json_encode($serverParam)."  params:".json_encode($parsedParams)." headers:".json_encode($request->getHeaders());
+        }else{
+            $msg = "http request start remote info:".json_encode($serverParam)."  params:".$params." headers:".json_encode($request->getHeaders());
+        }
         Log::req($msg);
         Log::info($msg);
 

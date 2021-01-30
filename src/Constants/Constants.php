@@ -10,5 +10,7 @@ class Constants
 
     const ZYPROSOFT_ZGW = "ZYProSoft-ZGW";
 
-    const ZYPOSOFT_REQ_ID = "ZYProSoft-ReqId";
+    const ZYPROSOFT_REQ_ID = "ZYProSoft-ReqId";
+
+    const ZYPROSOFT_UPLOAD = "ZYProSoft-Upload";
 }

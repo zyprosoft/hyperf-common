@@ -34,6 +34,15 @@ class Request extends FormRequest
     }
 
     /**
+     * 是不是上传请求
+     * @return bool
+     */
+    public function isUpload()
+    {
+        return !empty($this->getHeaderLine(Constants::ZYPROSOFT_UPLOAD));
+    }
+
+    /**
      * 获取请求参数
      * @return array|mixed
      */

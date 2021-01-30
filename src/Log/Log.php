@@ -114,7 +114,7 @@ class Log
             return $message;
         }
         $coId = Coroutine::id();
-        $reqId = $request->getHeaderLine(Constants::ZYPOSOFT_REQ_ID);
+        $reqId = $request->getHeaderLine(Constants::ZYPROSOFT_REQ_ID);
         $combineKey = "co($coId)";
         if (isset($reqId) && !empty($reqId)) {
             $combineKey .= "-$reqId";
