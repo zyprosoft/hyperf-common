@@ -57,14 +57,14 @@ class UploadController extends AbstractController
                 $isMimeValidate = true;
                 break;
             }
-            if (Str::endsWith('*', $limitType)) {
+            if (Str::endsWith($limitType, '*')) {
                 $type = Str::before($limitType, '*');
                 $type = str_replace('/', '\/', $type);
                 $pattern = '/^'.$type.'\w+$/';
                 Log::info("check mimetype use pattern:".$pattern);
                 if (Str::is($pattern, $mimeType)) {
                     $isMimeValidate = true;
-                };
+                }
             }else{
                 if (Str::lower($limitType) == $mimeType) {
                     $isMimeValidate = true;
