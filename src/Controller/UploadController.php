@@ -48,7 +48,7 @@ class UploadController extends AbstractController
         $size = $file->getSize();
         if ($size > $maxFileSize) {
             Log::info("upload file size:$size is over max file size:$maxFileSize");
-            throw new HyperfCommonException(ErrorCode::SYSTEM_ERROR_UPLOAD_FILE_SIZE_TOO_BIG);
+            throw new HyperfCommonException(ErrorCode::SYSTEM_ERROR_UPLOAD_FILE_SIZE_TOO_BIG,"upload file is too big!");
         }
 
         //校验文件类型
@@ -76,7 +76,7 @@ class UploadController extends AbstractController
         }
         if (!$isMimeValidate) {
             Log::info("allowed file mimetype is:".json_encode($fileTypeLimit));
-            throw new HyperfCommonException(ErrorCode::SYSTEM_ERROR_UPLOAD_FILE_MIME_NOT_ALLOWED);
+            throw new HyperfCommonException(ErrorCode::SYSTEM_ERROR_UPLOAD_FILE_MIME_NOT_ALLOWED,"upload file type is not allowed");
         }
 
         $systemType = config('hyperf-common.upload.system_type');
@@ -91,7 +91,7 @@ class UploadController extends AbstractController
             $fileRename = Carbon::now()->getTimestamp().'.'.$file->getExtension();
             $result = $this->moveFileToPublic('upload', $localDir, $fileRename);
             if (!$result) {
-                throw new HyperfCommonException(ErrorCode::SYSTEM_ERROR_UPLOAD_MOVE_FILE_FAIL);
+                throw new HyperfCommonException(ErrorCode::SYSTEM_ERROR_UPLOAD_MOVE_FILE_FAIL,"upload file move fail!");
             }
             $publicImageUrl = $localPublicUrl.$localDir.DIRECTORY_SEPARATOR.$fileRename;
             return  $this->success([
@@ -99,8 +99,9 @@ class UploadController extends AbstractController
             ]);
         }
         //不传本地就传七牛云，其他的后面再说吧
-        $result = $this->service->uploadLocalFileToQiniu($file->getRealPath());
-        return $this->success($result);
+        $result = $this->service->uploadLocalFileToQiniu($file);
+        Log::info("success upload to qiniu:$result");
+        return $this->success(['url'=>$result]);
     }
 
     public function getUploadImageToken(AuthedRequest $request)

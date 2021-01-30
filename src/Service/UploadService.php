@@ -2,6 +2,9 @@
 
 
 namespace ZYProSoft\Service;
+use Carbon\Carbon;
+use Hyperf\HttpMessage\Upload\UploadedFile;
+use Overtrue\Flysystem\Qiniu\QiniuAdapter;
 use ZYProSoft\Constants\ErrorCode;
 use Qiniu\Auth;
 use ZYProSoft\Exception\HyperfCommonException;
@@ -32,11 +35,18 @@ class UploadService extends AbstractService
         return ['token' => $token];
     }
 
-    public function uploadLocalFileToQiniu(string $localPath)
+    public function uploadLocalFileToQiniu(UploadedFile $file)
     {
-        $stream = fopen($localPath, 'r+');
-        $result = $this->fileQiniu()->writeStream($localPath, $stream);
+        $stream = fopen($file->getRealPath(), 'r+');
+        $fileName = Carbon::now()->getTimestamp().'.'.$file->getExtension();
+        $result = $this->fileQiniu()->writeStream($fileName, $stream);
         fclose($stream);
-        return $result;
+        if (!$result) {
+            throw new HyperfCommonException(ErrorCode::SYSTEM_ERROR_UPLOAD_MOVE_FILE_FAIL, "upload move file to qiniu fail!");
+        }
+        $adapter = $this->fileQiniu();
+        if ($adapter instanceof QiniuAdapter) {
+            return $adapter->getUrl($fileName);
+        }
     }
 }
