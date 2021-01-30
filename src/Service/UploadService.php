@@ -8,7 +8,6 @@ use Overtrue\Flysystem\Qiniu\QiniuAdapter;
 use ZYProSoft\Constants\ErrorCode;
 use Qiniu\Auth;
 use ZYProSoft\Exception\HyperfCommonException;
-use ZYProSoft\Log\Log;
 
 class UploadService extends AbstractService
 {
