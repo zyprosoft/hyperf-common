@@ -98,7 +98,7 @@ class UploadController extends AbstractController
                 'url' => $publicImageUrl
             ]);
         }
-        //不传本地就传七牛云，其他的后面再说吧
+        //不传本地就传七牛云，其他的太贵了不考虑了
         $result = $this->service->uploadLocalFileToQiniu($file);
         Log::info("success upload to qiniu:$result");
         return $this->success(['url'=>$result]);
