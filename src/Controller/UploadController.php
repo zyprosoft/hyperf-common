@@ -14,6 +14,11 @@ use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\AutoController;
 
 /**
+ * 如果你需要上传文件然后还有特殊业务逻辑
+ * 可以采用Aspect方式注入uploadFile方法，
+ * 在上传前校验你需要的参数，在上传完成后，将文件路径记录到数据库
+ * 这些都是你可以基于这个基础的上传能力来完善的
+ * 或者这个上传的处理方式可以作为你的一个参照，用于实现别的上传能力的接口
  * @AutoController(prefix="/common/upload")
  * Class UploadController
  * @package App\Controller\Common
@@ -59,7 +64,6 @@ class UploadController extends AbstractController
             }
             if (Str::endsWith($limitType, '*')) {
                 $type = Str::before($limitType, '*');
-                $type = str_replace('/', '\/', $type);
                 $pattern = '/^'.$type.'\w+$/';
                 Log::info("check mimetype use pattern:".$pattern);
                 if (Str::is($pattern, $mimeType)) {
@@ -79,7 +83,7 @@ class UploadController extends AbstractController
 
         $systemType = config('hyperf-common.upload.system_type');
         if ($systemType == Constants::UPLOAD_SYSTEM_TYPE_LOCAL) {
-            if (Str::is('/^image\/\w+$/', $mimeType)) {
+            if (Str::is('/^image/\w+$/', $mimeType)) {
                 $localDir = config('hyperf-common.upload.local.image_dir');
             }else{
                 $localDir = config('hyperf-common.upload.local.common_dir');
