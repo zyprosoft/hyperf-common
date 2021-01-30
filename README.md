@@ -41,6 +41,8 @@ appId=$appId&appSecret=$appSecret&nonce=$nonce&timestamp=$timestamp&$paramString
 第七步:用appSecret和第六步字符串采用sha256算法算出签名
 第八步:将得到的签名使用参数名signature加入到请求协议的外层即可
 
+重点:如果是接口带文件上传，需要将上述得到的auth和interface字段进行json编码,后端会在获取到请求的时候自动解码
+
 参考请求包
 ```php
 curl -d'{
