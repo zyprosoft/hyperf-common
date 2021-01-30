@@ -209,6 +209,7 @@ class AppCoreMiddleware extends CoreMiddleware
             $request = $request->withHeader(Constants::ZYPOSOFT_REQ_ID, $reqId);
             //修改请求的body,把是json字符串的解析出来回给request使用
             $request->withParsedBody($requestBody);
+            Log::info("upload request after modify parsed body :".json_encode($requestBody));
 
             //转换成框架的AutoController形式访问接口方法
             //三段表示：大模块名.Controller.Action;大模块通常可以用来标记是哪个大的模块，如管理端可以用Admin
