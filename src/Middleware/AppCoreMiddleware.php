@@ -119,6 +119,7 @@ class AppCoreMiddleware extends CoreMiddleware
         $sessionId = null;
         if (strtoupper($request->getMethod()) == 'POST') {
             $token = data_get($request->getParsedBody(), 'token');
+            Log::info("check parsed body:".json_encode($request->getParsedBody()));
             if (isset($token)) {
                 $sessionId = Session::token2SessionId($token);
             }
