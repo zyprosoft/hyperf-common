@@ -106,6 +106,7 @@ class AppCoreMiddleware extends CoreMiddleware
         //打印任意到达的请求
         Log::info("request uri:".$request->getUri()->getPath()." headers:".json_encode($request->getHeaders()));
         Log::info("request body:".$request->getBody());
+        Log::info("request parsed body:".json_encode($request->getParsedBody()));
 
         //增加请求ID
         $remoteAddress = $this->getRemoteAddress($request);
@@ -119,7 +120,6 @@ class AppCoreMiddleware extends CoreMiddleware
         $sessionId = null;
         if (strtoupper($request->getMethod()) == 'POST') {
             $token = data_get($request->getParsedBody(), 'token');
-            Log::info("check parsed body:".json_encode($request->getParsedBody()));
             if (isset($token)) {
                 $sessionId = Session::token2SessionId($token);
             }
