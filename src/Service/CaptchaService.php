@@ -4,7 +4,6 @@
 namespace ZYProSoft\Service;
 use Carbon\Carbon;
 use Hyperf\AsyncQueue\Driver\DriverFactory;
-use Hyperf\AsyncQueue\Driver\DriverInterface;
 use Hyperf\Utils\Arr;
 use Hyperf\Utils\Str;
 use Psr\SimpleCache\CacheInterface;
@@ -20,21 +19,6 @@ class CaptchaService
     const DIR_NAME_CURRENT = '.';
 
     const DIR_NAME_LAST_LEVEL = '..';
-
-   private function ttl()
-   {
-       return config('hyperf-common.captcha.ttl');
-   }
-
-   private function prefix()
-   {
-       return config('hyperf-common.captcha.prefix');
-   }
-
-   private function dirname()
-   {
-       return config('hyperf-common.captcha.dirname');
-   }
 
     /**
      * @Inject
@@ -53,6 +37,21 @@ class CaptchaService
      * @var DriverFactory
      */
     protected DriverFactory $driverFactory;
+
+    private function ttl()
+    {
+        return config('hyperf-common.captcha.ttl');
+    }
+
+    private function prefix()
+    {
+        return config('hyperf-common.captcha.prefix');
+    }
+
+    private function dirname()
+    {
+        return config('hyperf-common.captcha.dirname');
+    }
 
     protected function driver()
     {
@@ -89,8 +88,10 @@ class CaptchaService
         $savePath = $this->savePath($cacheKey);
         $builder->save($savePath);
         $this->cache->set($cacheKey, $phrase, $this->ttl());
+        $urlPrefix = config('hyperf-common.upload.local.url_prefix');
+        $urlPrefix = rtrim($urlPrefix,'/');
         return [
-            'path' => $subDirPath,
+            'url' => $urlPrefix.DIRECTORY_SEPARATOR.ltrim($subDirPath,'/'),
             'key' => $cacheKey,
         ];
     }
