@@ -124,10 +124,13 @@ class CaptchaService
         $this->cache->delete($cacheKey);
     }
 
-    public function refresh(string $cacheKey)
+    public function refresh(string $cacheKey = null)
     {
+        if (!isset($cacheKey)) {
+            return $this->get();
+        }
         $phrase = $this->cache->get($cacheKey);
-        if (is_null($phrase)) {
+        if (!isset($phrase)) {
             return $this->get();
         }
         $this->asyncClear($cacheKey);
