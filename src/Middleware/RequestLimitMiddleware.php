@@ -62,8 +62,7 @@ class RequestLimitMiddleware implements MiddlewareInterface
                 break;
             }
             if (Str::endsWith($uriItem, '*')) {
-                $subUriItem = Str::before($uriItem, '*');
-                if(Str::is($subUriItem, $uri)) {
+                if(Str::is($uriItem, $uri)) {
                     $isMatched = true;
                     Log::info("matched limit white list end by * character! :$uriItem");
                     break;
