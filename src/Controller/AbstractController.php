@@ -71,6 +71,25 @@ abstract class AbstractController
         return $validator->validated();
     }
 
+    /**
+     * 通用的验证码校验逻辑,如果该接口需要验证验证码，应该固定在参数里面传递
+     *  'captcha' => [
+     *      'key' => 'xxxx',
+     *      'code' => 'xxx'
+     *  ]
+     */
+    protected function validateCaptcha()
+    {
+        $this->validate([
+            'captcha.key' => 'string|required|min:1',
+            'captcha.code' => 'string|required|min:1',
+        ]);
+        //先校验验证码是否正确
+        $key = $this->request->param('captcha.key');
+        $code = $this->request->param('captcha.code');
+        $this->captchaService->validate($key, $code);
+    }
+
     protected function getUserId()
     {
         return $this->request->getUserId();
