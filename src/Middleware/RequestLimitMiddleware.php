@@ -61,7 +61,7 @@ class RequestLimitMiddleware implements MiddlewareInterface
                 $isMatched = true;
                 break;
             }
-            if ((Str::endsWith($uriItem, '*'))) {
+            if (Str::endsWith($uriItem, '*')) {
                 $subUriItem = Str::before($uriItem, '*');
                 if(Str::is($subUriItem, $uri)) {
                     $isMatched = true;
