@@ -56,7 +56,8 @@ class RequestLimitMiddleware implements MiddlewareInterface
         $isMatched = false;
         foreach ($whiteList as $uriItem)
         {
-            if (Str::contains($uri, $uriItem)) {
+            Log::info("uriItem:$uriItem uri:$uri");
+            if ($uriItem === $uri) {
                 $isMatched = true;
                 break;
             }
