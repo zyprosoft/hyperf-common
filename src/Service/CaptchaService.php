@@ -104,7 +104,13 @@ class CaptchaService
             throw new HyperfCommonException(ErrorCode::SYSTEM_ERROR_CAPTCHA_EXPIRED);
         }
 
-        if ($phrase != $input) {
+        $isStrictMode = config('hyperf-common.captcha.strict');
+
+        if ($isStrictMode && $phrase !== $input) {
+            throw new HyperfCommonException(ErrorCode::SYSTEM_ERROR_CAPTCHA_INVALIDATE);
+        }
+
+        if (Str::lower($phrase) !== Str::lower($input)) {
             throw new HyperfCommonException(ErrorCode::SYSTEM_ERROR_CAPTCHA_INVALIDATE);
         }
 

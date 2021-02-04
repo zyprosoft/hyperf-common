@@ -43,6 +43,7 @@ return [
         'config_list' => $appSecretList,//密钥对列表 eg. test&abcdefg;test1&abcdefg
     ],
     'captcha' => [
+        'strict' => env('CAPTCHA_STRICT', false),//验证码是否严格模式，区分大小写输入
         'ttl' => env('CAPTCHA_TTL', 600), //验证码有效时间
         'prefix' => env('CAPTCHA_PREFIX', 'cpt'), //缓存前缀
         'dirname' => env('CAPTCHA_DIRNAME', '/captcha') //存储目录
