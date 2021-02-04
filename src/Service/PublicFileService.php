@@ -20,7 +20,7 @@ class PublicFileService
             }
             return true;
         }
-        return mkdir($publicDir, 0744, true);
+        return mkdir($publicDir, 0755, true);
     }
 
     public function createPublicSubDirIfNotExist(string $subDir)
@@ -35,7 +35,7 @@ class PublicFileService
             }
             return false;
         }
-        return mkdir($subDirPath, 0744, true);
+        return mkdir($subDirPath, 0755, true);
     }
 
     public function publicPath(string $subPath)
