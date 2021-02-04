@@ -4,14 +4,18 @@
 namespace ZYProSoft\Middleware;
 
 
+use GuzzleHttp\Psr7\Uri;
+use http\Url;
 use Hyperf\Contract\ConfigInterface;
 use Hyperf\HttpMessage\Exception\HttpException;
 use Hyperf\Utils\Context;
+use Hyperf\Utils\Str;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
+use ZYProSoft\Log\Log;
 
 class CrossOriginMiddleware implements MiddlewareInterface
 {
@@ -48,7 +52,27 @@ class CrossOriginMiddleware implements MiddlewareInterface
         //读取允许跨域域名
         $origin = $request->getHeaderLine("Origin");
         $configOrigins = $this->config->get("hyperf-common.cors.allow_cross_origins");
-        if (!in_array($origin, $configOrigins)) {
+
+        //配置http://*.xxx.xxx.com跨域域名匹配
+        $isCorsMatched = false;
+        array_map(function (string $item) use ($request, $origin, &$isCorsMatched) {
+            $url = new Uri($item);
+            $host = $url->getHost();
+            if (Str::startsWith($host, '*')) {
+                $subHost = Str::after($host, '*');
+                if ($request->getUri()->getScheme() == $url->getScheme() && Str::endsWith($request->getUri()->getHost(), $subHost)) {
+                    Log::info("request origin cors is matched by item:$item");
+                    $isCorsMatched = true;
+                }
+            }else{
+                if ($origin == $item) {
+                    Log::info("request origin cors is matched by item:$item");
+                    $isCorsMatched = true;
+                }
+            }
+        }, $configOrigins);
+
+        if (!$isCorsMatched) {
             //不准跨域
             throw new HttpException(403, "not allowed cross origin not in whitelist");
         }
