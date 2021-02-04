@@ -1,45 +1,72 @@
 <?php
 declare(strict_types=1);
+use Hyperf\Utils\Str;
+use ZYProSoft\Log\Log;
+
+//设置加密密钥对
+$zgwSecretList = env('ZGW_SECRET_LIST');
+$appSecretList = [];
+if (isset($zgwSecretList)) {
+    $zgwSecretList = explode(';', $zgwSecretList);
+    array_map(function (string $item) use (&$appSecretList) {
+        if (Str::contains($item, '&')) {
+            $itemArray = explode('&', $item);
+            if (count($itemArray) == 2) {
+                $appSecretList[$itemArray[0]] = $appSecretList[$itemArray[1]];
+            }else{
+                Log::error('zgw secret item invalidate & explode count over 2!');
+            }
+        }else{
+            Log::error('zgw secret item invalidate & not found!');
+        }
+    }, $zgwSecretList);
+}
+
+//设置跨域白名单
+$corsDomainList = env('CORS_ORIGIN_LIST');
+$appCorsDomainList = [];
+if(isset($corsDomainList)) {
+    $appCorsDomainList = explode(';', $corsDomainList);
+}
+
+//设置限频接口白名单
+$rateLimitWhiteList = env('RATE_LIMIT_WHITE_LIST');
+$appRateLimitWhiteList = [];
+if(isset($rateLimitWhiteList)) {
+    $appRateLimitWhiteList = explode(';', $rateLimitWhiteList);
+}
 
 return [
     'zgw' => [
-        'force_auth' => env('FORCE_AUTH', false),//强制校验签名,开启后ZGW协议必须带签名参数访问
-        'sign_ttl' => 10,
-        'config_list' => [
-            "test" => "abcdefg", // appId => appSecret
-        ]
+        'force_auth' => env('ZGW_FORCE_AUTH', false),//强制校验签名,开启后ZGW协议必须带签名参数访问
+        'sign_ttl' => env('ZGW_SIGN_TTL', 10),
+        'config_list' => $appSecretList,
     ],
     'captcha' => [
-        'ttl' => 600,
-        'prefix' => 'cpt',
-        'dirname' => '/captcha'
+        'ttl' => env('CAPTCHA_TTL', 600),
+        'prefix' => env('CAPTCHA_PREFIX', 'cpt'),
+        'dirname' => env('CAPTCHA_DIRNAME', '/captcha')
     ],
     'cors' => [
-        'enable_cross_origin' => env('ENABLE_CROSS_ORIGIN', true),
-        'allow_cross_origins' => [
-            'http://127.0.0.1',
-            'http://localhost',
-            'http://lulinggushi.com'
-        ],
+        'enable_cross_origin' => env('CORS_ENABLE_CORS_ORIGIN', true),
+        'allow_cross_origins' => $appCorsDomainList,
     ],
     'rate_limit' => [
-        'access_rate_limit' => 10, //频率限制次数
-        'access_rate_ttl' => 20, //频率限制秒，两者组合为每20秒内最多允许10次请求单一接口
-        'white_list' => [
-            '/weixin'
-        ],
+        'access_rate_limit' => env('RATE_LIMIT_COUNT', 10), //频率限制次数
+        'access_rate_ttl' => env('RATE_LIMIT_TTL', 20), //频率限制秒，两者组合为每20秒内最多允许10次请求单一接口
+        'white_list' => $appRateLimitWhiteList,
     ],
     'clear_log' => [
-        'days' => 3, // 只保留三天的日志，三天以前的自动清除,设置成-1表示不执行清除任务
+        'days' => env('CLEAR_LOG_KEEP_DAYS', 3), // 只保留三天的日志，三天以前的自动清除,设置成-1表示不执行清除任务
     ],
     'mail' => [
         'smtp' => [
-            'host' => 'smtp.qq.com',
-            'auth' => true,
-            'username' => '',//qq邮箱账号,eg. 1003081775@qq.com
-            'password' => '',//qq邮箱申请的授权密码
-            'port' => '465', //qq邮箱经测试是465端口+ssl协议有效果
-            'secure' => 'ssl'
+            'host' => env('MAIL_SMTP_HOST', 'smtp.qq.com'),
+            'auth' => env('MAIL_SMTP_AUTH', true),
+            'username' => env('MAIL_SMTP_USER_NAME', ''),//qq邮箱账号,eg. 1003081775@qq.com
+            'password' => env('MAIL_SMTP_PASSWORD', ''),//qq邮箱申请的授权密码
+            'port' => env('MAIL_SMTP_PORT','465'), //qq邮箱经测试是465端口+ssl协议有效果
+            'secure' => env('MAIL_SMTP_SECURE','ssl')
         ]
     ],
     'upload' => [
