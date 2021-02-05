@@ -104,6 +104,8 @@ class CaptchaService
             throw new HyperfCommonException(ErrorCode::SYSTEM_ERROR_CAPTCHA_EXPIRED);
         }
 
+        Log::info("input:$input phrase:$phrase");
+
         $isStrictMode = config('hyperf-common.captcha.strict');
 
         if ($isStrictMode && $phrase !== $input) {
