@@ -21,15 +21,15 @@ class EmailEntry
 {
     public EmailAddressEntry $from;
 
-    public array $receivers;//内容是EmailAddressEntry
+    public array $receivers = [];//内容是EmailAddressEntry
 
     public EmailAddressEntry $replyTo;//EmailAddressEntry
 
-    public array $ccReceivers;//抄送列表,内容是EmailAddressEntry
+    public array $ccReceivers = [];//抄送列表,内容是EmailAddressEntry
 
-    public array $bccReceivers;//密送列表,内容是EmailAddressEntry
+    public array $bccReceivers = [];//密送列表,内容是EmailAddressEntry
 
-    public array $attachments;//附件信息,内容是EmailAttachmentEntry
+    public array $attachments = [];//附件信息,内容是EmailAttachmentEntry
 
     public bool $isHtml = true;//是不是html内容
 
