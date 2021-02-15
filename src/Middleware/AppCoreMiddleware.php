@@ -262,7 +262,7 @@ class AppCoreMiddleware extends CoreMiddleware
             Log::info("request content is not application/json");
             return parent::dispatch($request);
         }
-        $requestBody = json_decode($request->getBody(), true);
+        $requestBody = json_decode($request->getBody()->getContents(), true);
         if(!$requestBody) {
             //普通post请求
             Log::info("post method but decode body fail!");

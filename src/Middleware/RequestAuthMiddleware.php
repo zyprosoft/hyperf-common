@@ -60,7 +60,7 @@ class RequestAuthMiddleware implements MiddlewareInterface
         }
 
         //如果存在数据签名，需要校验数据签名
-        $requestBody = json_decode($request->getBody(), true);
+        $requestBody = json_decode($request->getBody()->getContents(), true);
         if (!$requestBody) {
             return $handler->handle($request);
         }
