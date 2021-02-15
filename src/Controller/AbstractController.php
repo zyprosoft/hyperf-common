@@ -1,4 +1,13 @@
 <?php
+/**
+ * This file is part of ZYProSoft/Hyperf-Common.
+ *
+ * @link     http://zyprosoft.lulinggushi.com
+ * @document http://zyprosoft.lulinggushi.com
+ * @contact  1003081775@qq.com
+ * @Company  泽湾普罗信息技术有限公司(ZYProSoft)
+ * @license  GPL
+ */
 declare(strict_types=1);
 
 namespace ZYProSoft\Controller;
@@ -13,6 +22,13 @@ use ZYProSoft\Exception\HyperfCommonException;
 use ZYProSoft\Service\PublicFileService;
 use ZYProSoft\Service\CaptchaService;
 
+/**
+ * 控制器基类，集成请求的验证
+ * 请求类型的识别等基础功能
+ * 文件上传请求的相关处理
+ * Class AbstractController
+ * @package ZYProSoft\Controller
+ */
 abstract class AbstractController
 {
     /**
@@ -90,46 +106,92 @@ abstract class AbstractController
         $this->captchaService->validate($key, $code);
     }
 
+    /**
+     * 获取当前请求用户的ID
+     * 这个是通过Auth的token反查回来的
+     * @return mixed
+     */
     protected function getUserId()
     {
         return $this->request->getUserId();
     }
 
+    /**
+     * 返回成功响应
+     * @param array $result
+     * @return \Psr\Http\Message\ResponseInterface
+     */
     protected function success($result = [])
     {
        return $this->response->success($result);
     }
 
+    /**
+     * 返回微信格式的成功响应
+     * @param string $result
+     * @return \Psr\Http\Message\ResponseInterface
+     */
     protected function weChatSuccess($result = '')
     {
         return $this->response->toWeChatXml($result);
     }
 
+    /**
+     * 获取请求中的文件信息
+     * @param string $fileName
+     * @return \Hyperf\HttpMessage\Upload\UploadedFile|\Hyperf\HttpMessage\Upload\UploadedFile[]|null
+     */
     protected function file(string $fileName)
     {
         return $this->request->file($fileName);
     }
 
+    /**
+     * 请求中是否包含指定的文件信息
+     * @param string $fileName
+     * @return bool
+     */
     protected function hasFile(string $fileName)
     {
         return $this->request->hasFile($fileName);
     }
 
+    /**
+     * 请求中的文件是否合法
+     * @param string $fileName
+     * @return bool
+     */
     protected function isFileValid(string $fileName)
     {
         return $this->file($fileName)->isValid();
     }
 
+    /**
+     * 上传文件的临时路径
+     * @param string $fileName
+     * @return string
+     */
     protected function fileTmpPath(string $fileName)
     {
         return $this->file($fileName)->getPath();
     }
 
+    /**
+     * 上传文件的扩展名
+     * @param string $fileName
+     * @return string|null
+     */
     protected function fileExtension(string $fileName)
     {
         return $this->file($fileName)->getExtension();
     }
 
+    /**
+     * 将上传文件从临时目录移动到指定目录完成上传
+     * @param string $fileName
+     * @param string $destination
+     * @return bool
+     */
     protected function moveFile(string $fileName, string $destination)
     {
         $file = $this->file($fileName);
@@ -141,31 +203,62 @@ abstract class AbstractController
         return chmod($destination,0744);
     }
 
+    /**
+     * 获取服务的公开可访问目录路径
+     * @return mixed
+     */
     protected function publicRootPath()
     {
         return $this->publicFileService->publicRootPath();
     }
 
+    /**
+     * 如果公开目录不存在则创建出来
+     * @return bool
+     */
     protected function createPublicDirIfNotExist()
     {
         return $this->publicFileService->createPublicDirIfNotExist();
     }
 
+    /**
+     * 在公开目录下面创建一个子目录
+     * @param string $subDir
+     * @return bool
+     */
     protected function createPublicSubDirIfNotExist(string $subDir)
     {
         return $this->publicFileService->createPublicSubDirIfNotExist($subDir);
     }
 
+    /**
+     * 获取一个基于公开目录的子目录路径
+     * @param string $subPath
+     * @return string|null
+     */
     protected function publicPath(string $subPath)
     {
         return $this->publicFileService->publicPath($subPath);
     }
 
+    /**
+     * 删除公开目录下的一个子目录
+     * @param string $subPath
+     * @return bool
+     */
     protected function deletePublicPath(string $subPath)
     {
         return $this->publicFileService->deletePublicPath($subPath);
     }
 
+    /**
+     * 把指定文件移动到公开目录下指定的子目录
+     * @param string $fileName
+     * @param string|null $subDir
+     * @param string|null $fileRename
+     * @param bool $autoCreateDir
+     * @return bool
+     */
     protected function moveFileToPublic(string $fileName, string $subDir = null, string $fileRename = null,  $autoCreateDir = true)
     {
         if (!isset($fileRename)) {

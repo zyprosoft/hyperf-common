@@ -1,5 +1,14 @@
 <?php
-
+/**
+ * This file is part of ZYProSoft/Hyperf-Common.
+ *
+ * @link     http://zyprosoft.lulinggushi.com
+ * @document http://zyprosoft.lulinggushi.com
+ * @contact  1003081775@qq.com
+ * @Company  泽湾普罗信息技术有限公司(ZYProSoft)
+ * @license  GPL
+ */
+declare(strict_types=1);
 
 namespace ZYProSoft\Service;
 use Carbon\Carbon;
@@ -9,6 +18,12 @@ use ZYProSoft\Constants\ErrorCode;
 use Qiniu\Auth;
 use ZYProSoft\Exception\HyperfCommonException;
 
+/**
+ * 文件上传服务的提供
+ * 主要是基于七牛存储和本地存储的实现
+ * Class UploadService
+ * @package ZYProSoft\Service
+ */
 class UploadService extends AbstractService
 {
     public function getQiniuImageUploadToken(string $fileKey)

@@ -38,7 +38,7 @@ $param["interfaceName"] = "zyprosoft.plan.getPlanList";
 ```
 ksort($param);
 ```
-4. json编码和MD5
+4. json编码和MD5,json编码不要转化中文成Unicode字符
 ```
 $paramString = md5(json_encode($param));
 ```

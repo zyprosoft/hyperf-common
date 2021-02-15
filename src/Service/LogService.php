@@ -1,5 +1,14 @@
 <?php
-
+/**
+ * This file is part of ZYProSoft/Hyperf-Common.
+ *
+ * @link     http://zyprosoft.lulinggushi.com
+ * @document http://zyprosoft.lulinggushi.com
+ * @contact  1003081775@qq.com
+ * @Company  泽湾普罗信息技术有限公司(ZYProSoft)
+ * @license  GPL
+ */
+declare(strict_types=1);
 
 namespace ZYProSoft\Service;
 use Carbon\Carbon;
@@ -9,6 +18,11 @@ use Hyperf\Utils\Arr;
 use Hyperf\Utils\Str;
 use ZYProSoft\Log\Log;
 
+/**
+ * 日志服务主要用于清理日志文件时用
+ * Class LogService
+ * @package ZYProSoft\Service
+ */
 class LogService
 {
     const KEEP_LOG_FILE_FOREVER = -1;

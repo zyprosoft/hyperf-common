@@ -1,5 +1,14 @@
 <?php
-
+/**
+ * This file is part of ZYProSoft/Hyperf-Common.
+ *
+ * @link     http://zyprosoft.lulinggushi.com
+ * @document http://zyprosoft.lulinggushi.com
+ * @contact  1003081775@qq.com
+ * @Company  泽湾普罗信息技术有限公司(ZYProSoft)
+ * @license  GPL
+ */
+declare(strict_types=1);
 
 namespace ZYProSoft\Controller;
 use Hyperf\Utils\Str;
@@ -26,6 +35,7 @@ use Hyperf\HttpServer\Annotation\AutoController;
 class UploadController extends AbstractController
 {
     /**
+     * 上传的逻辑服务
      * @Inject
      * @var UploadService
      */
@@ -104,6 +114,12 @@ class UploadController extends AbstractController
         return $this->success(['url'=>$result]);
     }
 
+    /**
+     * 获取七牛对象存储的图片上传Token
+     * 获取的Token只能用于上传图片类型的文件
+     * @param AuthedRequest $request
+     * @return \Psr\Http\Message\ResponseInterface
+     */
     public function getUploadImageToken(AuthedRequest $request)
     {
         $this->validate([
@@ -114,6 +130,11 @@ class UploadController extends AbstractController
         return $this->success($result);
     }
 
+    /**
+     * 获取七牛对象存储的通用文件的上传Token
+     * @param AuthedRequest $request
+     * @return \Psr\Http\Message\ResponseInterface
+     */
     public function getUploadToken(AuthedRequest $request)
     {
         $this->validate([

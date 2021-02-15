@@ -1,5 +1,13 @@
 <?php
-
+/**
+ * This file is part of ZYProSoft/Hyperf-Common.
+ *
+ * @link     http://zyprosoft.lulinggushi.com
+ * @document http://zyprosoft.lulinggushi.com
+ * @contact  1003081775@qq.com
+ * @Company  泽湾普罗信息技术有限公司(ZYProSoft)
+ * @license  GPL
+ */
 declare(strict_types=1);
 
 namespace ZYProSoft\Command;
@@ -10,6 +18,9 @@ use Psr\Container\ContainerInterface;
 use Symfony\Component\Console\Input\InputArgument;
 
 /**
+ * 封装系统启动，停止，重新启动的命令，执行方法
+ * 这个命令文件依赖bin目录下的server.sh脚本
+ * php bin/hyperf.php server start/stop/restart
  * @Command
  */
 class ServerCommand extends HyperfCommand

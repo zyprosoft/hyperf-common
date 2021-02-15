@@ -1,5 +1,14 @@
 <?php
-
+/**
+ * This file is part of ZYProSoft/Hyperf-Common.
+ *
+ * @link     http://zyprosoft.lulinggushi.com
+ * @document http://zyprosoft.lulinggushi.com
+ * @contact  1003081775@qq.com
+ * @Company  泽湾普罗信息技术有限公司(ZYProSoft)
+ * @license  GPL
+ */
+declare(strict_types=1);
 
 namespace ZYProSoft\Job;
 use Hyperf\AsyncQueue\Job;
@@ -8,6 +17,11 @@ use ZYProSoft\Entry\EmailEntry;
 use ZYProSoft\Log\Log;
 use ZYProSoft\Service\EmailService;
 
+/**
+ * 异步发送邮件的任务
+ * Class SendEmailJob
+ * @package ZYProSoft\Job
+ */
 class SendEmailJob extends Job
 {
     private EmailEntry $emailEntry;

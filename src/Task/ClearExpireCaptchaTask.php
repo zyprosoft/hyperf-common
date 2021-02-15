@@ -1,11 +1,21 @@
 <?php
-
+/**
+ * This file is part of ZYProSoft/Hyperf-Common.
+ *
+ * @link     http://zyprosoft.lulinggushi.com
+ * @document http://zyprosoft.lulinggushi.com
+ * @contact  1003081775@qq.com
+ * @Company  泽湾普罗信息技术有限公司(ZYProSoft)
+ * @license  GPL
+ */
+declare(strict_types=1);
 
 namespace ZYProSoft\Task;
 use Hyperf\Utils\ApplicationContext;
 use ZYProSoft\Service\CaptchaService;
 
 /**
+ * 定时清理过期的验证码文件
  * Class ClearExpireCaptchaTask
  * @package ZYProSoft\Task
  */

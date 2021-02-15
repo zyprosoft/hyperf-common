@@ -1,5 +1,14 @@
 <?php
-
+/**
+ * This file is part of ZYProSoft/Hyperf-Common.
+ *
+ * @link     http://zyprosoft.lulinggushi.com
+ * @document http://zyprosoft.lulinggushi.com
+ * @contact  1003081775@qq.com
+ * @Company  泽湾普罗信息技术有限公司(ZYProSoft)
+ * @license  GPL
+ */
+declare(strict_types=1);
 
 namespace ZYProSoft\Middleware;
 
@@ -18,6 +27,15 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use function json_decode;
 
+/**
+ * 框架封装的核心文件
+ * 在这里解析ZGW协议和上传协议
+ * 处理非ZGW协议和微信平台等格式的协议
+ * 拥有记录单个请求耗时和内存消耗的统计
+ * 可以前置检查请求是否需要进行参数签名
+ * Class AppCoreMiddleware
+ * @package ZYProSoft\Middleware
+ */
 class AppCoreMiddleware extends CoreMiddleware
 {
     /**

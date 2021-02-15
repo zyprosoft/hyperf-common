@@ -1,14 +1,14 @@
 <?php
-
-declare(strict_types=1);
 /**
- * This file is part of Hyperf.
+ * This file is part of ZYProSoft/Hyperf-Common.
  *
- * @link     https://www.hyperf.io
- * @document https://doc.hyperf.io
- * @contact  group@hyperf.io
- * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
+ * @link     http://zyprosoft.lulinggushi.com
+ * @document http://zyprosoft.lulinggushi.com
+ * @contact  1003081775@qq.com
+ * @Company  泽湾普罗信息技术有限公司(ZYProSoft)
+ * @license  GPL
  */
+declare(strict_types=1);
 namespace ZYProSoft\Exception\Handler;
 
 use Hyperf\Server\Exception\ServerException;
@@ -25,6 +25,11 @@ use Qbhy\HyperfAuth\Exception\AuthException;
 use Throwable;
 use ZYProSoft\Http\Response;
 
+/**
+ * 框架能够捕获的异常统一处理
+ * Class HyperfCommonExceptionHandler
+ * @package ZYProSoft\Exception\Handler
+ */
 class HyperfCommonExceptionHandler extends ExceptionHandler
 {
 

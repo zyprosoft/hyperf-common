@@ -1,4 +1,13 @@
 <?php
+/**
+ * This file is part of ZYProSoft/Hyperf-Common.
+ *
+ * @link     http://zyprosoft.lulinggushi.com
+ * @document http://zyprosoft.lulinggushi.com
+ * @contact  1003081775@qq.com
+ * @Company  泽湾普罗信息技术有限公司(ZYProSoft)
+ * @license  GPL
+ */
 declare(strict_types=1);
 
 namespace ZYProSoft\Component;
@@ -17,6 +26,15 @@ use GuzzleHttp\Psr7\Response;
 use GuzzleHttp\Exception\ConnectException;
 use GuzzleHttp\Exception\RequestException;
 
+/**
+ * 通过Http请求第三方服务的组件
+ * 主要对请求方法进行了简单的封装
+ * 增加重试插件和日志插件注入
+ * 封装第三方调用结果的返回，可以是忽略错误或者指定
+ * 必须抛出异常
+ * Class BaseComponent
+ * @package ZYProSoft\Component
+ */
 abstract class BaseComponent
 {
     /**

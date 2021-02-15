@@ -1,5 +1,14 @@
 <?php
-
+/**
+ * This file is part of ZYProSoft/Hyperf-Common.
+ *
+ * @link     http://zyprosoft.lulinggushi.com
+ * @document http://zyprosoft.lulinggushi.com
+ * @contact  1003081775@qq.com
+ * @Company  泽湾普罗信息技术有限公司(ZYProSoft)
+ * @license  GPL
+ */
+declare(strict_types=1);
 
 namespace ZYProSoft\Service;
 use Carbon\Carbon;
@@ -14,6 +23,11 @@ use ZYProSoft\Constants\ErrorCode;
 use ZYProSoft\Log\Log;
 use ZYProSoft\Job\ClearCaptchaJob;
 
+/**
+ * 验证码服务
+ * Class CaptchaService
+ * @package ZYProSoft\Service
+ */
 class CaptchaService
 {
     const DIR_NAME_CURRENT = '.';
@@ -77,6 +91,11 @@ class CaptchaService
         return $this->publicFileService->publicPath($this->subDirPath($cacheKey));
     }
 
+    /**
+     * 获取一张验证码图片和信息
+     * @return string[]
+     * @throws \Psr\SimpleCache\InvalidArgumentException
+     */
     public function get()
     {
         $builder = new CaptchaBuilder();
@@ -96,6 +115,13 @@ class CaptchaService
         ];
     }
 
+    /**
+     * 校验提交的验证码是否正确
+     * @param string $cacheKey
+     * @param string $input
+     * @return bool
+     * @throws \Psr\SimpleCache\InvalidArgumentException
+     */
     public function validate(string $cacheKey, string $input)
     {
         $phrase = $this->cache->get($cacheKey);
@@ -121,11 +147,20 @@ class CaptchaService
         return true;
     }
 
+    /**
+     * 异步清除指定的验证码信息
+     * @param string $cacheKey
+     */
     public function asyncClear(string $cacheKey)
     {
         $this->driver()->push(new ClearCaptchaJob($cacheKey));
     }
 
+    /**
+     * 删除验证码图片
+     * @param string $cacheKey
+     * @throws \Psr\SimpleCache\InvalidArgumentException
+     */
     public function remove(string $cacheKey)
     {
         $savePath = $this->subDirPath($cacheKey);
@@ -133,6 +168,12 @@ class CaptchaService
         $this->cache->delete($cacheKey);
     }
 
+    /**
+     * 刷新验证码
+     * @param string|null $cacheKey
+     * @return string[]
+     * @throws \Psr\SimpleCache\InvalidArgumentException
+     */
     public function refresh(string $cacheKey = null)
     {
         if (!isset($cacheKey)) {
@@ -146,6 +187,10 @@ class CaptchaService
         return  $this->get();
     }
 
+    /**
+     * 清理过期的验证码图片和缓存
+     * 通常都在异步任务里面执行
+     */
     public function clearExpireCaptcha()
     {
         $files = scandir($this->publicFileService->publicPath($this->saveDir()));

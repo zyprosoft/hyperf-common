@@ -1,5 +1,14 @@
 <?php
-
+/**
+ * This file is part of ZYProSoft/Hyperf-Common.
+ *
+ * @link     http://zyprosoft.lulinggushi.com
+ * @document http://zyprosoft.lulinggushi.com
+ * @contact  1003081775@qq.com
+ * @Company  泽湾普罗信息技术有限公司(ZYProSoft)
+ * @license  GPL
+ */
+declare(strict_types=1);
 
 namespace ZYProSoft\Service;
 
@@ -12,6 +21,11 @@ use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\SMTP;
 use PHPMailer\PHPMailer\Exception;
 
+/**
+ * 邮件发送服务
+ * Class EmailService
+ * @package ZYProSoft\Service
+ */
 class EmailService
 {
     protected function mailer()
@@ -29,6 +43,13 @@ class EmailService
         return $mail;
     }
 
+    /**
+     * 发送邮件，是直接发，还是在异步任务内发
+     * 可以将相应的日志写入对应的日志文件
+     * @param EmailEntry $emailEntry
+     * @param bool $isInTask
+     * @return bool
+     */
     public function sendEmail(EmailEntry $emailEntry, bool $isInTask = true)
     {
         $logger = Log::logger('task');

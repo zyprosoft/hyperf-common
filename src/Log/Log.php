@@ -1,4 +1,13 @@
 <?php
+/**
+ * This file is part of ZYProSoft/Hyperf-Common.
+ *
+ * @link     http://zyprosoft.lulinggushi.com
+ * @document http://zyprosoft.lulinggushi.com
+ * @contact  1003081775@qq.com
+ * @Company  泽湾普罗信息技术有限公司(ZYProSoft)
+ * @license  GPL
+ */
 declare(strict_types=1);
 
 namespace ZYProSoft\Log;
@@ -13,6 +22,13 @@ use Psr\Http\Message\ServerRequestInterface;
 use ZYProSoft\Constants\Constants;
 
 /**
+ * 这个类是一个Log的简易使用接口封装
+ * 可以将接口入口信息补充进入单行日志
+ * 将日志划分成了几种日志
+ * task日志为crontab日志
+ * request日志为请求日志
+ * system日志为框架std输出的日志
+ * daily日志为框架的详细日志
  * Class Log
  * @package ZYProSoft\Log
  */

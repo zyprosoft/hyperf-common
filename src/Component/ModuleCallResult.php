@@ -1,5 +1,14 @@
 <?php
-
+/**
+ * This file is part of ZYProSoft/Hyperf-Common.
+ *
+ * @link     http://zyprosoft.lulinggushi.com
+ * @document http://zyprosoft.lulinggushi.com
+ * @contact  1003081775@qq.com
+ * @Company  泽湾普罗信息技术有限公司(ZYProSoft)
+ * @license  GPL
+ */
+declare(strict_types=1);
 
 namespace ZYProSoft\Component;
 
@@ -37,6 +46,10 @@ class ModuleCallResult
         return new ModuleCallResult($code, $message, $data);
     }
 
+    /**
+     * 是返回成功结果还是抛出异常
+     * @return array|mixed
+     */
     public function successOrFailException()
     {
         if (!$this->isSuccess()) {

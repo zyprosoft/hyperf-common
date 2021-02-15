@@ -1,4 +1,13 @@
 <?php
+/**
+ * This file is part of ZYProSoft/Hyperf-Common.
+ *
+ * @link     http://zyprosoft.lulinggushi.com
+ * @document http://zyprosoft.lulinggushi.com
+ * @contact  1003081775@qq.com
+ * @Company  泽湾普罗信息技术有限公司(ZYProSoft)
+ * @license  GPL
+ */
 declare(strict_types=1);
 
 namespace ZYProSoft\Service;
@@ -19,6 +28,14 @@ use ZYProSoft\Entry\EmailEntry;
 use ZYProSoft\Job\SendEmailJob;
 use ZYProSoft\Log\Log;
 
+/**
+ * 服务的虚基类
+ * 提供了鉴权，事件分发，异步任务派送的基础能力接口的封装
+ * 上层的业务逻辑服务有需要用到这些能力的时候可以通过简单的
+ * 接口调用进行使用
+ * Class AbstractService
+ * @package ZYProSoft\Service
+ */
 abstract class AbstractService
 {
     /**

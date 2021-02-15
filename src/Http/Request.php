@@ -1,6 +1,14 @@
 <?php
-
-
+/**
+ * This file is part of ZYProSoft/Hyperf-Common.
+ *
+ * @link     http://zyprosoft.lulinggushi.com
+ * @document http://zyprosoft.lulinggushi.com
+ * @contact  1003081775@qq.com
+ * @Company  泽湾普罗信息技术有限公司(ZYProSoft)
+ * @license  GPL
+ */
+declare(strict_types=1);
 namespace ZYProSoft\Http;
 
 use Hyperf\Utils\Arr;
@@ -11,6 +19,12 @@ use Symfony\Component\HttpFoundation\HeaderBag;
 use Symfony\Component\HttpFoundation\Request as SymfonyRequest;
 use Psr\Container\ContainerInterface;
 
+/**
+ * 普通请求的封装
+ * 可以实现按照请求规则的检查
+ * Class Request
+ * @package ZYProSoft\Http
+ */
 class Request extends FormRequest
 {
     /**

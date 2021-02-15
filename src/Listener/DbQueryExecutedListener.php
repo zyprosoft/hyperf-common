@@ -1,14 +1,14 @@
 <?php
-
-declare(strict_types=1);
 /**
- * This file is part of Hyperf.
+ * This file is part of ZYProSoft/Hyperf-Common.
  *
- * @link     https://www.hyperf.io
- * @document https://doc.hyperf.io
- * @contact  group@hyperf.io
- * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
+ * @link     http://zyprosoft.lulinggushi.com
+ * @document http://zyprosoft.lulinggushi.com
+ * @contact  1003081775@qq.com
+ * @Company  泽湾普罗信息技术有限公司(ZYProSoft)
+ * @license  GPL
  */
+declare(strict_types=1);
 namespace ZYProSoft\Listener;
 
 use ZYProSoft\Log\Log;
@@ -19,6 +19,8 @@ use Hyperf\Utils\Arr;
 use Hyperf\Utils\Str;
 
 /**
+ * 数据库执行事件的监听，
+ * 记录数据库耗时信息
  * @Listener
  */
 class DbQueryExecutedListener implements ListenerInterface
