@@ -313,8 +313,23 @@ class AppCoreMiddleware extends CoreMiddleware
         return parent::dispatch($request);
     }
 
+    protected function formatBytes(int $bytes)
+    {
+        if ($bytes > 1024 * 1024) {
+            return round($bytes / 1024 / 1024, 2).' MB';
+        } elseif ($bytes > 1024) {
+            return round($bytes / 1024, 2).' KB';
+        }
+
+        return $bytes . ' B';
+    }
+
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
+        //记录请求开始的内存信息
+        $beforeUsage = memory_get_usage(true);
+        $beforeUsageString = $this->formatBytes($beforeUsage);
+
         //记录一条开始请求的日志
         $serverParam = $request->getServerParams();
         if (strtoupper($request->getMethod()) == 'POST')
@@ -324,12 +339,13 @@ class AppCoreMiddleware extends CoreMiddleware
             $params = json_encode($request->getQueryParams());
         }
         $uploadTag = $request->getHeaderLine(Constants::ZYPROSOFT_UPLOAD);
+        $msg = "before memory:$beforeUsageString";
         if (!empty($uploadTag)) {
             $parsedParams = $request->getParsedBody();
             Log::info("this is an upload request, switch to record parsed body instead!");
-            $msg = "http request start remote info:".json_encode($serverParam)."  params:".json_encode($parsedParams)." headers:".json_encode($request->getHeaders());
+            $msg .= " || http request start remote info:".json_encode($serverParam)."  params:".json_encode($parsedParams)." headers:".json_encode($request->getHeaders());
         }else{
-            $msg = "http request start remote info:".json_encode($serverParam)."  params:".$params." headers:".json_encode($request->getHeaders());
+            $msg .= " || http request start remote info:".json_encode($serverParam)."  params:".$params." headers:".json_encode($request->getHeaders());
         }
         Log::req($msg);
         Log::info($msg);
@@ -343,7 +359,14 @@ class AppCoreMiddleware extends CoreMiddleware
         $remoteAddress = $this->getRemoteAddress($request);
         $remotePort = $this->getRemotePort($request);
         $headerInfo = json_encode($response->getHeaders());
-        $msg = "$cost ms || $remoteAddress:$remotePort || headers:$headerInfo || http request end response with content:".$content;
+
+        //记录输出结果时候的内存信息
+        $endUsage = memory_get_usage(true);
+        $endUsageString = $this->formatBytes($endUsage);
+        $memory = $endUsage - $beforeUsage;
+        $memoryString = $this->formatBytes($memory);
+        $msg = "end memory:$endUsageString || memory:$memoryString || $cost ms || $remoteAddress:$remotePort || headers:$headerInfo || http request end response with content:".$content;
+
         Log::req($msg);
         Log::info($msg);
 
