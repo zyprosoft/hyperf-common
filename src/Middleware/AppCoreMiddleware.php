@@ -354,14 +354,14 @@ class AppCoreMiddleware extends CoreMiddleware
         {
             $params = $request->getBody()->getContents();
         }else{
-            $params = json_encode($request->getQueryParams());
+            $params = json_encode($request->getQueryParams(), JSON_UNESCAPED_UNICODE);
         }
         $uploadTag = $request->getHeaderLine(Constants::ZYPROSOFT_UPLOAD);
         $msg = "before memory:$beforeUsageString";
         if (!empty($uploadTag)) {
             $parsedParams = $request->getParsedBody();
             Log::info("this is an upload request, switch to record parsed body instead!");
-            $msg .= " || http request start remote info:".json_encode($serverParam)."  params:".json_encode($parsedParams)." headers:".json_encode($request->getHeaders());
+            $msg .= " || http request start remote info:".json_encode($serverParam)."  params:".json_encode($parsedParams,JSON_UNESCAPED_UNICODE)." headers:".json_encode($request->getHeaders());
         }else{
             $msg .= " || http request start remote info:".json_encode($serverParam)."  params:".$params." headers:".json_encode($request->getHeaders());
         }
