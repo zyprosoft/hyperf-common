@@ -18,6 +18,8 @@
         }
     },
     "require": {
+        "php": ">=7.4",
+        "ext-swoole": ">=4.6.3",
         "hyperf/constants": "~2.1.0",
         "hyperf/async-queue": "~2.1.0",
         "hyperf/model-cache": "~2.1.0",
