@@ -63,6 +63,11 @@ class RequestLimitMiddleware implements MiddlewareInterface
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
+        $enable = $this->config->get('hyperf-common.rate_limit.enable');
+        if (!$enable) {
+            return $handler->handle($request);
+        }
+
         //接口地址
         $uri = $request->getUri()->getPath();
         //白名单限制

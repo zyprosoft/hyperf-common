@@ -152,11 +152,9 @@ class AppCoreMiddleware extends CoreMiddleware
         if (!isset($sessionId)) {
             $sessionId = Session::token2SessionId($remoteAddress);
         }
-        if (isset($sessionId)) {
-            Log::info("core set session id:$sessionId");
-            $request = $request->withCookieParams([$sessionName=>$sessionId]);
-            Log::info("modify cookie params result:".json_encode($request->getCookieParams()));
-        }
+        Log::info("core set session id:$sessionId");
+        $request = $request->withCookieParams([$sessionName=>$sessionId]);
+        Log::info("modify cookie params result:".json_encode($request->getCookieParams()));
 
         //识别上传请求
         if ($request->getUri()->getPath() == '/upload') {
