@@ -37,9 +37,9 @@ class UploadService extends AbstractService
 
     public function getQiniuCommonUploadToken(string $fileKey, array $policy = null)
     {
-        $accessKey = config('file.qiniu.accessKey');
-        $secretKey = config('file.qiniu.secretKey');
-        $bucket = config('file.qiniu.bucket');
+        $accessKey = config('file.storage.qiniu.accessKey');
+        $secretKey = config('file.storage.qiniu.secretKey');
+        $bucket = config('file.storage.qiniu.bucket');
         if (empty($accessKey) || empty($secretKey) || empty($bucket)) {
             throw new HyperfCommonException(ErrorCode::SYSTEM_ERROR_QINIU_UPLOAD_CONFIG_NOT_SET);
         }
