@@ -29,7 +29,7 @@ class UploadService extends AbstractService
     public function getQiniuImageUploadToken(string $fileKey)
     {
         $policy = [
-            'insertOnly' => true,
+            'insertOnly' => 1,
             'mimeLimit' => 'image/*',
         ];
         return $this->getQiniuCommonUploadToken($fileKey, $policy);
