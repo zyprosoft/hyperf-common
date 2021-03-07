@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace ZYProSoft\Facade;
 
+use App\Model\User;
 use Hyperf\Utils\ApplicationContext;
 use Qbhy\HyperfAuth\Authenticatable;
 use Qbhy\HyperfAuth\AuthManager;
@@ -31,6 +32,15 @@ class Auth
     public static function user()
     {
         return self::authManager()->user();
+    }
+
+    public static function isAdmin()
+    {
+        $user = self::user();
+        if ($user instanceof User) {
+            return $user->isAdmin();
+        }
+        return  false;
     }
 
     public static function userId()
