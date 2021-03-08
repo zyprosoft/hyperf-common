@@ -68,12 +68,18 @@ class Auth
         return self::authManager()->logout();
     }
 
+    /**
+     * 分钟要转成秒
+     */
     public static function tokenTTL()
     {
         $guard = config('auth.default.guard');
-        return config('auth.guards.'.$guard.'.ttl');
+        return config('auth.guards.'.$guard.'.ttl')*60;
     }
 
+    /**
+     * 单位是秒
+     */
     public static function refreshTokenTTL()
     {
         $guard = config('auth.default.guard');
