@@ -67,4 +67,16 @@ class Auth
     {
         return self::authManager()->logout();
     }
+
+    public static function tokenTTL()
+    {
+        $guard = config('auth.default.guard');
+        return config('auth.guards.'.$guard.'.ttl');
+    }
+
+    public static function refreshTokenTTL()
+    {
+        $guard = config('auth.default.guard');
+        return config('auth.guards.'.$guard.'.refresh_ttl');
+    }
 }
