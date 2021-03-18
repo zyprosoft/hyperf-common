@@ -75,6 +75,16 @@ class AppCoreMiddleware extends CoreMiddleware
             }
         }
 
+        //拦截微信支付的通知
+        if ($path == '/wxpay/notify') {
+            Log::info("wxpay notify request headers:".json_encode($request->getHeaders()));
+            if (strtoupper($request->getMethod()) == 'POST') {
+                if ($request->getHeaderLine("content-type") == "text/xml") {
+                    return $this->modifyRequestWithPath($request, "/wxpay/receiveNotify");
+                }
+            }
+        }
+
         return false;
     }
 
