@@ -14,6 +14,7 @@ namespace ZYProSoft\Exception;
 use ZYProSoft\Constants\ErrorCode;
 use Hyperf\Server\Exception\ServerException;
 use Throwable;
+use App\Constants\ErrorCode as BusinessErrorCode;
 
 /**
  * 框架异常
@@ -25,6 +26,9 @@ class HyperfCommonException extends ServerException
     public function __construct(int $code = 0, string $message = null, Throwable $previous = null)
     {
         if (is_null($message)) {
+            $message = BusinessErrorCode::getMessage($code);
+        }
+        if(empty($message)) {
             $message = ErrorCode::getMessage($code);
         }
 
