@@ -72,13 +72,24 @@ abstract class AbstractController
     }
 
     /**
+     * 需要自定义错误消息可以重载
+     * @return array
+     */
+    public function messages()
+    {
+        return [
+            'sensitive' => '内容包含敏感词汇!',
+        ];
+    }
+
+    /**
      * 指定规则检测
      * @param $rules
      * @return array
      */
     public function validate($rules)
     {
-        $validator = $this->validatorFactory->make($this->request->getParams(), $rules);
+        $validator = $this->validatorFactory->make($this->request->getParams(), $rules, $this->messages());
         $validator->validate();
         if ($validator->fails()) {
             $errorMsg = $validator->errors()->first();
