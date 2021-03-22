@@ -63,15 +63,19 @@ class HyperfCommonExceptionHandler extends ExceptionHandler
         if ($throwable instanceof ValidationException) {
             $convertErrors = [];
             $outPutParams = [];
+            $summaryError = [];
             foreach ($throwable->errors() as $paramName => $errors)
             {
-                $errorMsg = $paramName." error description is: ".implode('、', $errors);
+                $errorCombine = implode('、', $errors);
+                $errorMsg = $paramName." error description is: ".$errorCombine;
                 $convertErrors[] = $errorMsg;
                 $outPutParams[] = $paramName;
+                $summaryError[] = $errorCombine;
             }
             $errorMsg = "param validate error: ".implode(';', $convertErrors);
+            $summaryMsg = implode(';', $summaryError);
             Log::error($errorMsg);
-            $errorMsg = implode(',',$outPutParams).'参数出现错误';
+            $errorMsg = implode(',',$outPutParams).'参数出现错误:'.$summaryMsg;
             return $this->response->fail(ErrorCode::PARAM_ERROR, $errorMsg);
         }
 
