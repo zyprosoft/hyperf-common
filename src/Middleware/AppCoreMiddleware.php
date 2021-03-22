@@ -88,6 +88,11 @@ class AppCoreMiddleware extends CoreMiddleware
         //七牛的审核通知回调
         if($path == '/qiniu/notify') {
             Log::info("qiniu notify request headers:".json_encode($request->getHeaders()));
+            if (strtoupper($request->getMethod()) == 'POST') {
+                if ($request->getHeaderLine("content-type") == "text/xml") {
+                    return $this->modifyRequestWithPath($request, "/qiniu/notify");
+                }
+            }
         }
 
         return false;
