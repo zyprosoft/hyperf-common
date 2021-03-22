@@ -56,9 +56,9 @@ class SensitiveService
     {
         $result =  $this->handle->islegal($content);
         if($result == false) {
+            Log::error("($content)发现敏感词内容");
             return false;
         }
-        Log::error("($content)发现敏感词内容");
         return $result;
     }
 }

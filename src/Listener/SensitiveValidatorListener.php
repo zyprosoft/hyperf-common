@@ -39,7 +39,7 @@ class SensitiveValidatorListener implements ListenerInterface
         // 注册了 foo 验证器
         $validatorFactory->extend('sensitive', function ($attribute, $value, $parameters, $validator) {
             Log::info("process sensitive rule with value:$value");
-            return !$this->service->isLegal($value);
+            return $this->service->isLegal($value);
         });
         // 当创建一个自定义验证规则时，你可能有时候需要为错误信息定义自定义占位符这里扩展了 :foo 占位符
         $validatorFactory->replacer('sensitive', function ($message, $attribute, $rule, $parameters) {
