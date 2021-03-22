@@ -9,9 +9,13 @@ use ZYProSoft\Log\Log;
 
 class SensitiveService
 {
-    const SENSITIVE_BASE_PATH = __DIR__.'/SensitiveAssets/';
+    const SENSITIVE_BASE_PATH = BASE_PATH . '/assets/sensitive/';
 
-    private array $sensitivePaths = [
+    /**
+     * 默认的
+     * @var array|string[]
+     */
+    private array $defaultPaths = [
         'ad.txt',
         'part1.txt',
         'po.txt',
@@ -27,10 +31,24 @@ class SensitiveService
     public function __construct()
     {
         $this->handle = new SensitiveHelper();
-        foreach ($this->sensitivePaths as $path) {
+        foreach ($this->defaultPaths as $path) {
             $realPath = self::SENSITIVE_BASE_PATH.$path;
-            Log::info("sensitive config path:$realPath");
+            Log::info("sensitive default config path:$realPath");
             $this->handle->setTreeByFile($realPath);
+        }
+
+    }
+
+    /**
+     * 外部增加自定义的敏感词库
+     * @param array $paths
+     * @throws \DfaFilter\Exceptions\PdsBusinessException
+     */
+    public function addSensitivePaths(array $paths)
+    {
+        foreach ($paths as $path) {
+            Log::info("sensitive add custom config path:$path");
+            $this->handle->setTreeByFile($path);
         }
     }
 

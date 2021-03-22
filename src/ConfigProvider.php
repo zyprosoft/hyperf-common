@@ -61,6 +61,27 @@ class ConfigProvider
                     'source' => __DIR__ . '/Publish/service.sh',  // 对应的配置文件路径
                     'destination' => BASE_PATH . '/bin/service.sh', // 复制为这个路径下的该文件
                 ],
+                [
+                    'id' => 'txt',
+                    'description' => '敏感词库.', // 描述
+                    // 建议默认配置放在 publish 文件夹中，文件命名和组件名称相同
+                    'source' => __DIR__ . '/Publish/ad.txt',  // 对应的配置文件路径
+                    'destination' => BASE_PATH . '/assets/sensitive/ad.txt', // 复制为这个路径下的该文件
+                ],
+                [
+                    'id' => 'txt',
+                    'description' => '敏感词库.', // 描述
+                    // 建议默认配置放在 publish 文件夹中，文件命名和组件名称相同
+                    'source' => __DIR__ . '/Publish/part1.txt',  // 对应的配置文件路径
+                    'destination' => BASE_PATH . '/assets/sensitive/part1.txt', // 复制为这个路径下的该文件
+                ],
+                [
+                    'id' => 'txt',
+                    'description' => '敏感词库.', // 描述
+                    // 建议默认配置放在 publish 文件夹中，文件命名和组件名称相同
+                    'source' => __DIR__ . '/Publish/po.txt',  // 对应的配置文件路径
+                    'destination' => BASE_PATH . '/assets/sensitive/po.txt', // 复制为这个路径下的该文件
+                ],
             ],
         ];
     }
