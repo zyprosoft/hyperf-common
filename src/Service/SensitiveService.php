@@ -52,11 +52,11 @@ class SensitiveService
         }
     }
 
-    public function isLegal($content)
+    public function isSensitive($content)
     {
-        $result =  $this->handle->islegal($content);
-        if($result == false) {
-            Log::error("($content)发现敏感词内容");
+        $result =  $this->handle->getBadWord($content,1,1);
+        if(!empty($result)) {
+            Log::error("($content)发现敏感词内容:".implode(';',$result));
             return false;
         }
         return $result;
