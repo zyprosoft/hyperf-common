@@ -36,7 +36,6 @@
         "hyperf/testing": "~2.1.0",
         "hyperf/utils": "~2.1.0",
         "hyperf/validation": "~2.1.0",
-        "lustre/php-dfa-sensitive": "^1.4",
         "overtrue/flysystem-qiniu": "^1.0",
         "overtrue/wechat": "~5.0",
         "phpmailer/phpmailer": "^6.2",
