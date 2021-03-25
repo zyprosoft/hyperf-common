@@ -57,8 +57,8 @@ class SensitiveService
         $result =  $this->handle->getBadWord($content,0,1);
         if(!empty($result)) {
             Log::error("($content)发现敏感词内容:".implode(';',$result));
-            return true;
+            return false;
         }
-        return false;
+        return $result;
     }
 }
