@@ -16,9 +16,7 @@ class SensitiveService
      * @var array|string[]
      */
     private array $defaultPaths = [
-        'ad.txt',
-        'part1.txt',
-        'po.txt',
+        'sensitive.txt',
     ];
 
     /**
@@ -54,11 +52,11 @@ class SensitiveService
 
     public function isSensitive($content)
     {
-        $result =  $this->handle->getBadWord($content,0,1);
-        if(!empty($result)) {
-            Log::error("($content)发现敏感词内容:".implode(';',$result));
+        $result =  $this->handle->getBadWord($content,1);
+        if(empty($result)) {
             return false;
         }
-        return $result;
+        Log::error("($content)发现敏感词内容:".implode(';',$result));
+        return true;
     }
 }
