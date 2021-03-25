@@ -18,6 +18,10 @@ use Qbhy\HyperfAuth\AuthManager;
 use Symfony\Component\HttpFoundation\HeaderBag;
 use Symfony\Component\HttpFoundation\Request as SymfonyRequest;
 use Psr\Container\ContainerInterface;
+use ZYProSoft\Constants\ErrorCode;
+use ZYProSoft\Exception\HyperfCommonException;
+use App\Model\User;
+use ZYProSoft\Log\Log;
 
 /**
  * 普通请求的封装
@@ -107,7 +111,22 @@ class Request extends FormRequest
 
     public function isLogin()
     {
-        return $this->auth->check();
+        if (empty($this->getToken())) {
+            throw new HyperfCommonException(ErrorCode::USER_REQUEST_TOKEN_NOT_FOUND);
+        }
+        $result = $this->auth->check();
+        if ($result == false) {
+            //检查令牌和数据库的存储是否一致
+            $token = $this->getToken();
+            $user = User::query()->where('token',$token)->first();
+            if(!$user instanceof User) {
+                Log::error("用户所使用令牌和数据库存储不一致，已经处于多端登陆失效状态，需要重新登陆!");
+                throw new HyperfCommonException(ErrorCode::USER_REQUEST_TOKEN_EXPIRED_AND_NOT_MATCH);
+            }
+            Log::error("用户所使用令牌和数据库一致，但是已经失效，需要刷新Token");
+            throw new HyperfCommonException(ErrorCode::USER_REQUEST_TOKEN_EXPIRED);
+        }
+        return true;
     }
 
     /**
