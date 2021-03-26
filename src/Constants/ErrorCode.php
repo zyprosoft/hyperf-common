@@ -148,17 +148,17 @@ class ErrorCode extends AbstractConstants
     const SYSTEM_ERROR_UPLOAD_FILE_MIME_NOT_ALLOWED= 10020;
 
     /**
-     * @Message ("用户请求不包含Token!")
+     * @Message ("Token not found in request!")
      */
     const USER_REQUEST_TOKEN_NOT_FOUND = 10021;
 
     /**
-     * @Message ("用户请求Token已经过期!")
+     * @Message ("Token has expired!")
      */
     const USER_REQUEST_TOKEN_EXPIRED = 10022;
 
     /**
-     * @Message ("用户请求Token已经过期并且和数据库存储令牌不匹配!")
+     * @Message ("Token expired and not correct!")
      */
     const USER_REQUEST_TOKEN_EXPIRED_AND_NOT_MATCH = 10023;
 }
