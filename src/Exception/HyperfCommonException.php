@@ -25,7 +25,7 @@ class HyperfCommonException extends ServerException
 {
     public function __construct(int $code = 0, string $message = null, Throwable $previous = null)
     {
-        if (is_null($message)) {
+        if (!isset($message)) {
             $message = BusinessErrorCode::getMessage($code);
         }
         if(empty($message)) {
