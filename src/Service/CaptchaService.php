@@ -194,7 +194,7 @@ class CaptchaService
     public function clearExpireCaptcha()
     {
         $captchaDir = $this->publicFileService->publicPath($this->saveDir());
-        if(file_exists($captchaDir)) {
+        if(!file_exists($captchaDir)) {
            $result = mkdir($captchaDir,0755,true);
            if(!$result) {
                Log::error("创建验证码目录失败!");
