@@ -193,7 +193,15 @@ class CaptchaService
      */
     public function clearExpireCaptcha()
     {
-        $files = scandir($this->publicFileService->publicPath($this->saveDir()));
+        $captchaDir = $this->publicFileService->publicPath($this->saveDir());
+        if(file_exists($captchaDir)) {
+           $result = mkdir($captchaDir,0755,true);
+           if(!$result) {
+               Log::error("创建验证码目录失败!");
+               return;
+           }
+        }
+        $files = scandir($captchaDir);
         if (empty($files)) {
             Log::task("no captcha file to check expire!");
             return;
