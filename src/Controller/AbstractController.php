@@ -99,6 +99,24 @@ abstract class AbstractController
     }
 
     /**
+     * 快捷验证指定参数数组
+     * @param $rules
+     * @param array $params
+     * @param array $messages
+     */
+    public function validateParams($rules, array $params, array $messages = [])
+    {
+        $messages = $this->messages() + $messages;
+        $validator = $this->validatorFactory->make($params, $rules, $messages);
+        $validator->validate();
+        if ($validator->fails()) {
+            $errorMsg = $validator->errors()->first();
+            throw new HyperfCommonException(ErrorCode::PARAM_ERROR, $errorMsg);
+        }
+        return $validator->validated();
+    }
+
+    /**
      * 通用的验证码校验逻辑,如果该接口需要验证验证码，应该固定在参数里面传递
      *  'captcha' => [
      *      'key' => 'xxxx',
