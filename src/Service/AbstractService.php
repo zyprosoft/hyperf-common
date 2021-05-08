@@ -195,6 +195,15 @@ abstract class AbstractService
         return $data;
     }
 
+    protected function errorWithData(int $code, string $message, $data = [])
+    {
+        return [
+            'code' => $code,
+            'message' => $message,
+            'data' => $data
+        ];
+    }
+
     protected function clearAllCache()
     {
         return $this->cache->clear();

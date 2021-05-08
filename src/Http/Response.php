@@ -97,6 +97,12 @@ class Response
 
     public function success($data = []): PsrResponseInterface
     {
+        //是不是自己组装了逻辑层错误结果返回
+        if( isset($data['code']) &&
+            isset($data['message']) &&
+            isset($data['data'])) {
+            return $this->errorWithData($data);
+        }
         $result = [
             'code' => 0,
             'message' => 'ok',
@@ -107,6 +113,14 @@ class Response
         $result = array_merge($requestInfo, $result);
 
         return $this->response->json($result);
+    }
+
+    public function errorWithData(array $result)
+    {
+        $code = data_get($result,'code');
+        $message = data_get($result,'message');
+        $data = data_get($result,'data');
+        return $this->fail($code, $message, $data);
     }
 
     public function fail($errorCode, $message, $data = []): PsrResponseInterface
