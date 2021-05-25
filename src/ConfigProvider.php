@@ -21,7 +21,7 @@ use ZYProSoft\Middleware\AppValidationMiddleware as ZYValidationMiddleware;
 use Qbhy\HyperfTesting\TestResponse;
 use ZYProSoft\Aspect\TestResponse as ZYTestResponse;
 use ZYProSoft\Cache\Cache as ZYCache;
-use \ZYProSoft\ElasticSearch\ElasticsearchProvider as ZYElasticsearchProvider;
+use ZYProSoft\ElasticSearch\ElasticsearchProvider as ZYElasticsearchProvider;
 
 class ConfigProvider
 {
