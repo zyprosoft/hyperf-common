@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace ZYProSoft;
 use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\HttpServer\CoreMiddleware;
+use Hyperf\Scout\Provider\ElasticsearchProvider;
 use Psr\SimpleCache\CacheInterface;
 use ZYProSoft\Log\StdoutLoggerFactory as ZYProSoftStdLoggerFactory;
 use ZYProSoft\Middleware\AppCoreMiddleware as ZYProSoftCoreMiddleware;
@@ -20,6 +21,7 @@ use ZYProSoft\Middleware\AppValidationMiddleware as ZYValidationMiddleware;
 use Qbhy\HyperfTesting\TestResponse;
 use ZYProSoft\Aspect\TestResponse as ZYTestResponse;
 use ZYProSoft\Cache\Cache as ZYCache;
+use \ZYProSoft\ElasticSearch\ElasticsearchProvider as ZYElasticsearchProvider;
 
 class ConfigProvider
 {
@@ -32,6 +34,7 @@ class ConfigProvider
                 ValidationMiddleware::class => ZYValidationMiddleware::class,
                 TestResponse::class => ZYTestResponse::class,
                 CacheInterface::class => ZYCache::class,
+                ElasticsearchProvider::class => ZYElasticsearchProvider::class,
             ],
             'commands' => [
             ],
