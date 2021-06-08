@@ -47,8 +47,6 @@ class UploadService extends AbstractService
         $auth = new Auth($accessKey, $secretKey);
         $ttl = config('hyperf-common.upload.qiniu.token_ttl', 3600);
         $token = $auth->uploadToken($bucket, $fileKey, $ttl, $policy);
-        //异步事件通知用户已经获取了上传Token
-        $this->eventDispatcher->dispatch(new UserDidGetUploadToken($this->userId()));
         return ['token' => $token];
     }
 
