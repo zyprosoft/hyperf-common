@@ -2,10 +2,10 @@
 /**
  * This file is part of ZYProSoft/Hyperf-Common.
  *
- * @link     http://zyprosoft.lulinggushi.com
- * @document http://zyprosoft.lulinggushi.com
- * @contact  1003081775@qq.com
- * @Company  泽湾普罗信息技术有限公司(ZYProSoft)
+ * @link     https://topicq.icodefuture.com
+ * @document https://topicq.icodefuture.com
+ * @contact  1003081775@qq.com;微信:zyprosoft
+ * @Company  吉安码动未来信息科技有限公司
  * @license  GPL
  */
 declare(strict_types=1);
@@ -74,7 +74,7 @@ return [
         'smtp' => [
             'host' => env('MAIL_SMTP_HOST', 'smtp.qq.com'), //smtp服务器地址
             'auth' => env('MAIL_SMTP_AUTH', true), //smtp是否需要鉴权
-            'username' => env('MAIL_SMTP_USER_NAME', ''),//qq邮箱账号,eg. 1003081775@qq.com
+            'username' => env('MAIL_SMTP_USER_NAME', ''),//qq邮箱账号,eg. 1003081775@qq.com;微信:zyprosoft
             'password' => env('MAIL_SMTP_PASSWORD', ''),//qq邮箱申请的授权密码
             'port' => env('MAIL_SMTP_PORT','465'), //qq邮箱经测试是465端口+ssl协议有效果
             'secure' => env('MAIL_SMTP_SECURE','ssl') //smtp通信协议ssl或者tls

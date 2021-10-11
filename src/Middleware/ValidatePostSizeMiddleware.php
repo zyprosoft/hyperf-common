@@ -3,10 +3,10 @@
 /**
  * This file is part of ZYProSoft/Hyperf-Common.
  *
- * @link     http://zyprosoft.lulinggushi.com
- * @document http://zyprosoft.lulinggushi.com
- * @contact  1003081775@qq.com
- * @Company  泽湾普罗信息技术有限公司(ZYProSoft)
+ * @link     https://topicq.icodefuture.com
+ * @document https://topicq.icodefuture.com
+ * @contact  1003081775@qq.com;微信:zyprosoft
+ * @Company  吉安码动未来信息科技有限公司
  * @license  GPL
  */
 declare(strict_types=1);
