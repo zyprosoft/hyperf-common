@@ -97,13 +97,9 @@ class RequestAuthMiddleware implements MiddlewareInterface
         $interfaceName = Arr::get($requestBody, 'interface.name');
         $param["interfaceName"] = $interfaceName;
         ksort($param);
-        $paramList = [];
-        foreach ( $param as $key => $value) {
-            $paramList[] = "{$key}={$value}";
-        }
-        $paramListString = implode('&', $paramList);
-        Log::info("param string:$paramListString");
-        $paramString = md5($paramListString);
+        $paramsJson = json_encode($param, JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE);
+        Log::info("param string:$paramsJson");
+        $paramString = md5($paramsJson);
 
         $nonce = $auth["nonce"];
         $base = "appId=$appId&appSecret=$appSecret&nonce=$nonce&timestamp=$timestamp&$paramString";
