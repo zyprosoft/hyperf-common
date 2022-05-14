@@ -97,7 +97,7 @@ class RequestAuthMiddleware implements MiddlewareInterface
         $interfaceName = Arr::get($requestBody, 'interface.name');
         $param["interfaceName"] = $interfaceName;
         ksort($param);
-        $paramsJson = json_encode($param, JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE);
+        $paramsJson = json_encode($param, JSON_PRETTY_PRINT);
         Log::info("param string:$paramsJson");
         $paramString = md5($paramsJson);
 
