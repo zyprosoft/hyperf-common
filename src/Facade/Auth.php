@@ -12,7 +12,7 @@ declare(strict_types=1);
 
 namespace ZYProSoft\Facade;
 
-use App\Model\User;
+use ZYProSoft\Model\LoginUserModable;
 use Hyperf\Utils\ApplicationContext;
 use Qbhy\HyperfAuth\Authenticatable;
 use Qbhy\HyperfAuth\AuthManager;
@@ -37,7 +37,7 @@ class Auth
     public static function isAdmin()
     {
         $user = self::user();
-        if ($user instanceof User) {
+        if ($user instanceof LoginUserModable) {
             return $user->isAdmin();
         }
         return  false;
@@ -58,7 +58,7 @@ class Auth
         return self::authManager()->guest();
     }
 
-    public static function login(Authenticatable $user)
+    public static function login(LoginUserModable $user)
     {
         return self::authManager()->login($user);
     }
