@@ -12,5 +12,5 @@ interface LoginUserModable extends Authenticatable
 
     public function isAdmin();
 
-    public static function getByToken($token): ?LoginUserModable;
+    public function getByToken($token): ?LoginUserModable;
 }
