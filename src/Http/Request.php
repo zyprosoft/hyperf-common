@@ -20,6 +20,7 @@ use Symfony\Component\HttpFoundation\Request as SymfonyRequest;
 use Psr\Container\ContainerInterface;
 use ZYProSoft\Constants\ErrorCode;
 use ZYProSoft\Exception\HyperfCommonException;
+use ZYProSoft\Facade\Auth;
 use ZYProSoft\Model\LoginUserModable;
 use ZYProSoft\Log\Log;
 
@@ -118,8 +119,7 @@ class Request extends FormRequest
         if ($result == false) {
             //检查令牌和数据库的存储是否一致
             $token = $this->getToken();
-            $currentUser = $this->auth->user();
-            $user = $currentUser->getByToken($token);
+            $user = Auth::userByToken($token);
             if(!$user instanceof LoginUserModable) {
                 Log::error("用户所使用令牌和数据库存储不一致，已经处于多端登陆失效状态，需要重新登陆!");
                 throw new HyperfCommonException(ErrorCode::USER_REQUEST_TOKEN_EXPIRED_AND_NOT_MATCH);

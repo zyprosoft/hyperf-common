@@ -29,6 +29,11 @@ class Auth
         return ApplicationContext::getContainer()->get(AuthManager::class);
     }
 
+    public static function userByToken($token): ?LoginUserModable {
+        $loginUserAbleCls = config('auth.providers.users.model');
+        return call_user_func_array([$loginUserAbleCls, 'getByToken'], [$token]);
+    }
+
     public static function user()
     {
         return self::authManager()->user();
