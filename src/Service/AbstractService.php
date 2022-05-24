@@ -27,6 +27,7 @@ use ZYProSoft\Cache\ClearPrefixCacheJob;
 use ZYProSoft\Entry\EmailEntry;
 use ZYProSoft\Job\SendEmailJob;
 use ZYProSoft\Log\Log;
+use ZYProSoft\Model\LoginUserModable;
 
 /**
  * 服务的虚基类
@@ -185,7 +186,7 @@ abstract class AbstractService
         return $this->user()->getId();
     }
 
-    protected function user():Authenticatable
+    protected function user():LoginUserModable
     {
         return $this->auth->user();
     }
