@@ -183,6 +183,9 @@ abstract class AbstractService
 
     protected function userId()
     {
+        if ($this->auth->guest()) {
+            return null;
+        }
         return $this->user()->getId();
     }
 
