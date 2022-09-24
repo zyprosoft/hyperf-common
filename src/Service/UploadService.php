@@ -53,7 +53,9 @@ class UploadService extends AbstractService
     public function uploadLocalFileToQiniu(UploadedFile $file)
     {
         $stream = fopen($file->getRealPath(), 'r+');
-        $fileName = Carbon::now()->getTimestamp().'.'.$file->getExtension();
+        $dirname = config('file.storage.qiniu.app_dir')."/";
+        $now = Carbon::now()->getTimestamp();
+        $fileName = $dirname.$now.'.'.$file->getExtension();
         $result = $this->fileQiniu()->writeStream($fileName, $stream);
         fclose($stream);
         if (!$result) {
