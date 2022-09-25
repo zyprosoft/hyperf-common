@@ -48,6 +48,12 @@ abstract class BaseComponent
     protected Client $client;
 
     /**
+     * 接口具体路径
+     * @var string
+     */
+    protected string $apiUri = '/';
+
+    /**
      * 初始化client的配置
      * @var array
      */
@@ -166,7 +172,7 @@ abstract class BaseComponent
         return ModuleCallResult::fail($code, $message, $data);
     }
 
-    protected function zgwRequest(string $token, string $interfaceName, array $params)
+    protected function zgwRequest(string $interfaceName, array $params, string $token = null)
     {
         $body = [
             'token' => $token,
@@ -182,6 +188,7 @@ abstract class BaseComponent
         ];
         $options = collect($this->options);
         $options->put('form_params', $body);
-        return $this->client->post('/', $options->toArray());
+        $result = $this->client->post($this->apiUri, $options->toArray());
+        return new ModuleCallResult(data_get($result,'code'), data_get($result,'message'), data_get($result,'data'));
     }
 }
