@@ -165,4 +165,23 @@ abstract class BaseComponent
     {
         return ModuleCallResult::fail($code, $message, $data);
     }
+
+    protected function zgwRequest(string $token, string $interfaceName, array $params)
+    {
+        $body = [
+            'token' => $token,
+            'eventId' => time(),
+            'timestamp' => time(),
+            'version' => '1.0',
+            'caller' => config('app_name','hyperfCommon'),
+            'seqId' => rand(),
+            'interface' => [
+                'name' => $interfaceName,
+                'param' => $params
+            ]
+        ];
+        $options = collect($this->options);
+        $options->put('form_params', $body);
+        return $this->client->post('/', $options->toArray());
+    }
 }
