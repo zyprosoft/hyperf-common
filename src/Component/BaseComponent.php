@@ -25,6 +25,7 @@ use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
 use GuzzleHttp\Exception\ConnectException;
 use GuzzleHttp\Exception\RequestException;
+use function Qiniu\json_decode;
 
 /**
  * 通过Http请求第三方服务的组件
@@ -187,8 +188,10 @@ abstract class BaseComponent
             ]
         ];
         $options = collect($this->options);
-        $options->put('form_params', $body);
-        $result = $this->client->post($this->apiUri, $options->toArray());
+        $options->put('json', $body);
+        $response = $this->client->post($this->apiUri, $options->toArray());
+        $resultJson = $response->getBody()->getContents();
+        $result = json_decode($resultJson, true);
         return new ModuleCallResult(data_get($result,'code'), data_get($result,'message'), data_get($result,'data'));
     }
 }
