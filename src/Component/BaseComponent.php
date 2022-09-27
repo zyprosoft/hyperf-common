@@ -190,8 +190,8 @@ abstract class BaseComponent
         $options = collect($this->options);
         $options->put('json', $body);
         $response = $this->client->post($this->apiUri, $options->toArray());
+        $response->getBody()->rewind();
         $resultJson = $response->getBody()->getContents();
-        $result = json_decode($resultJson, true);
-        return new ModuleCallResult(data_get($result,'code'), data_get($result,'message'), data_get($result,'data'));
+        return json_decode($resultJson, true);
     }
 }
