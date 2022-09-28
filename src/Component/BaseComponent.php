@@ -192,6 +192,8 @@ abstract class BaseComponent
         $response = $this->client->post($this->apiUri, $options->toArray());
         $response->getBody()->rewind();
         $resultJson = $response->getBody()->getContents();
-        return json_decode($resultJson, true);
+        $result = json_decode($resultJson, true);
+
+        return new ModuleCallResult(data_get($result,'code'), data_get($result,'message'), data_get($result,'data'));
     }
 }
