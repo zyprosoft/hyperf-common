@@ -57,6 +57,20 @@ class ServerCommand extends HyperfCommand
     {
         $name = env("APP_NAME");
         $shellPath = BASE_PATH."/bin";
+
+        //如果是停止服务，直接找到runtime的主进程pid，然后通过kill -9 的形式杀掉服务
+        if ($action === "stop") {
+            $pidPath = config("server.settings.pid_file");
+            $pid = file_get_contents($pidPath);
+
+            $command = "kill -9 {$pid} && echo 'stop success' && exit";
+            $result = system($command);
+            if (!$result) {
+                $this->line("run action $action fail!");
+            }
+            return;
+        }
+
         $command = "cd $shellPath && bash service.sh -t $action -n $name";
         $result = system($command);
         if (!$result) {
