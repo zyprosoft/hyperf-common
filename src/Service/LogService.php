@@ -50,10 +50,6 @@ class LogService
 
     protected function hasLog()
     {
-        $hasDir = $this->local()->fileExists('/logs');
-        if (!$hasDir) {
-            return false;
-        }
         $items = collect($this->local()->listContents('/logs'));
         $items->filter(function (array $item) {
             $systemFiles = ['.','..'];
