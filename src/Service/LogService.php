@@ -14,9 +14,9 @@ namespace ZYProSoft\Service;
 use Carbon\Carbon;
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\Filesystem\FilesystemFactory;
-use Hyperf\Utils\Arr;
 use Hyperf\Utils\Str;
 use ZYProSoft\Log\Log;
+use League\Flysystem\FileAttributes;
 
 /**
  * 日志服务主要用于清理日志文件时用
@@ -51,9 +51,14 @@ class LogService
     protected function hasLog()
     {
         $items = collect($this->local()->listContents('/logs'));
-        $items->filter(function (array $item) {
+        $items->filter(function (FileAttributes $item) {
             $systemFiles = ['.','..'];
-            return !in_array($item['filename'], $systemFiles);
+            $pathArray = explode("/",$item->path());
+            $filename = "";
+            if ( !empty($pathArray)) {
+                $filename = $pathArray[count($pathArray) - 1];
+            }
+            return !in_array($filename, $systemFiles);
         });
         if ($items->isEmpty()) {
             return false;
@@ -75,17 +80,17 @@ class LogService
             Log::task("has no log files to check clear");
             return;
         }
-        $items = $this->local()->listContents('/logs');
+        $items = collect($this->local()->listContents('/logs'));
         Log::task("start deal with log files:".json_encode($items));
 
         $clearPaths = [];
-        array_map(function (array $file) use (&$clearPaths) {
-            $path = Arr::get($file, 'path');
+        $items->map(function (FileAttributes $file) use (&$clearPaths) {
+            $path = $file->path();
             if (Str::endsWith($path, '.log') == false) {
                 Log::info("not a log file:$path");
                 return;
             }
-            $timestamp = Arr::get($file, 'timestamp');
+            $timestamp = $file->lastModified();
             $lastDate = Carbon::createFromTimestamp($timestamp);
             $daysDidPass = Carbon::now()->floatDiffInRealDays($lastDate);
             Log::task("$path last modify time has been over $daysDidPass days");
@@ -93,7 +98,7 @@ class LogService
                 Log::task("$path need to be clear!");
                 $clearPaths[] = $path;
             }
-        }, $items);
+        });
 
         Log::task("will clear this log paths:".json_encode($clearPaths));
 
