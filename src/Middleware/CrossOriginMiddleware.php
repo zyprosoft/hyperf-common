@@ -74,12 +74,12 @@ class CrossOriginMiddleware implements MiddlewareInterface
             $host = $url->getHost();
             if (Str::startsWith($host, '*')) {
                 $subHost = Str::after($host, '*');
-                if ($request->getUri()->getScheme() == $url->getScheme() && Str::endsWith($request->getUri()->getHost(), $subHost)) {
+                if ($request->getUri()->getScheme() === $url->getScheme() && Str::endsWith($request->getUri()->getHost(), $subHost)) {
                     Log::info("request origin cors is matched by item:$item");
                     $isCorsMatched = true;
                 }
             }else{
-                if ($origin == $item) {
+                if ($origin === $item) {
                     Log::info("request origin cors is matched by item:$item");
                     $isCorsMatched = true;
                 }
@@ -100,8 +100,11 @@ class CrossOriginMiddleware implements MiddlewareInterface
         Context::set(ResponseInterface::class, $response);
 
         if ($request->getMethod() === 'OPTIONS') {
+            Log::info("cors options request return response!");
             return $response;
         }
+
+        Log::info("cors request allowed!");
 
         return  $handler->handle($request);
     }
