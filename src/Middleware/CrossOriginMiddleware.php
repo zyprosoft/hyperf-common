@@ -93,12 +93,13 @@ class CrossOriginMiddleware implements MiddlewareInterface
 
         //允许跨域
         $response = Context::get(ResponseInterface::class);
-        $response = $response->withAddedHeader("Access-Control-Allow-Origin", $origin);
+        $response = $response->withAddedHeader("Access-Control-Allow-Origin", "*");
         $response = $response->withAddedHeader("Access-Control-Allow-Credentials", "true");
-        $response = $response->withAddedHeader('Access-Control-Allow-Headers', 'DNT,Keep-Alive,User-Agent,Cache-Control,Content-Type,hyperf-session-id');
+        $response = $response->withAddedHeader('Access-Control-Allow-Headers', '*');
+        $response = $response->withAddedHeader('Access-Control-Allow-Methods', '*');
         Context::set(ResponseInterface::class, $response);
 
-        if ($request->getMethod() == 'OPTIONS') {
+        if ($request->getMethod() === 'OPTIONS') {
             return $response;
         }
 
