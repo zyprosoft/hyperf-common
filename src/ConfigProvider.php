@@ -29,7 +29,7 @@ class ConfigProvider
     {
         return [
             'dependencies' => [
-                StdoutLoggerInterface::class => ZYProSoftStdLoggerFactory::class,
+//                StdoutLoggerInterface::class => ZYProSoftStdLoggerFactory::class,
                 CoreMiddleware::class => ZYProSoftCoreMiddleware::class,
                 ValidationMiddleware::class => ZYValidationMiddleware::class,
                 TestResponse::class => ZYTestResponse::class,
