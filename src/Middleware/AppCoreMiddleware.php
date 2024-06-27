@@ -362,10 +362,6 @@ class AppCoreMiddleware extends CoreMiddleware
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
-        //记录请求开始的内存信息
-        $beforeUsage = memory_get_usage(true);
-        $beforeUsageString = $this->formatBytes($beforeUsage);
-
         //记录一条开始请求的日志
         $serverParam = $request->getServerParams();
         if (strtoupper($request->getMethod()) == 'POST')
@@ -375,13 +371,12 @@ class AppCoreMiddleware extends CoreMiddleware
             $params = json_encode($request->getQueryParams(), JSON_UNESCAPED_UNICODE);
         }
         $uploadTag = $request->getHeaderLine(Constants::ZYPROSOFT_UPLOAD);
-        $msg = "before memory:$beforeUsageString";
+        $msg = "";
         if (!empty($uploadTag)) {
             $parsedParams = $request->getParsedBody();
-            Log::info("this is an upload request, switch to record parsed body instead!");
-            $msg .= " || http request start remote info:".json_encode($serverParam)."  params:".json_encode($parsedParams,JSON_UNESCAPED_UNICODE)." headers:".json_encode($request->getHeaders());
+            $msg .= "http request start remote info:".json_encode($serverParam)."  params:".json_encode($parsedParams,JSON_UNESCAPED_UNICODE)." headers:".json_encode($request->getHeaders());
         }else{
-            $msg .= " || http request start remote info:".json_encode($serverParam)."  params:".$params." headers:".json_encode($request->getHeaders());
+            $msg .= "http request start remote info:".json_encode($serverParam)."  params:".$params." headers:".json_encode($request->getHeaders());
         }
         Log::req($msg);
         Log::info($msg);
@@ -396,12 +391,8 @@ class AppCoreMiddleware extends CoreMiddleware
         $remotePort = $this->getRemotePort($request);
         $headerInfo = json_encode($response->getHeaders());
 
-        //记录输出结果时候的内存信息
-        $endUsage = memory_get_usage(true);
-        $endUsageString = $this->formatBytes($endUsage);
-        $memory = $endUsage - $beforeUsage;
-        $memoryString = $this->formatBytes($memory);
-        $msg = "end memory:$endUsageString || memory:$memoryString || $cost ms || $remoteAddress:$remotePort || headers:$headerInfo || http request end response with content:".$content;
+        //记录输出结果时候的耗时信息
+        $msg = "$cost ms || $remoteAddress:$remotePort || headers:$headerInfo || http request end response with content:".$content;
 
         Log::req($msg);
         Log::info($msg);
