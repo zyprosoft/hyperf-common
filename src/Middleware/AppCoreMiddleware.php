@@ -274,22 +274,35 @@ class AppCoreMiddleware extends CoreMiddleware
         {
             return parent::dispatch($request);
         }
+        
         $contentType = $request->getHeaderLine("content-type");
+        
         //明确不是json请求就不再处理了
         if (!empty($contentType) && strtolower($contentType) !== "application/json") {
             Log::info("request content is not application/json");
-            return parent::dispatch($request);
+
+            //如果是sse请求不处理
+            if (strtolower($contentType) !== "text/event-stream") {
+                return parent::dispatch($request);
+            }
         }
+        
         $requestBody = json_decode($request->getBody()->getContents(), true);
+        
         if(!$requestBody) {
             //普通post请求
             Log::info("post method but decode body fail!");
             return parent::dispatch($request);
         }
+        
         //是json请求就自动增加content-type:application/json,保证后面可以自动解析body
         if (empty($contentType) || strtolower($contentType) !== "application/json") {
-            $request = $request->withoutHeader("content-type");
-            $request = $request->withAddedHeader("content-type","application/json");
+            
+            //如果是sse请求不修改
+            if (strtolower($contentType) !== "text/event-stream") {
+                $request = $request->withoutHeader("content-type");
+                $request = $request->withAddedHeader("content-type","application/json");
+            }
         }
         $interfaceName = null;
         $param = null;
