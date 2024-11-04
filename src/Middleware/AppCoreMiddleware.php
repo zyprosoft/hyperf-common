@@ -230,7 +230,7 @@ class AppCoreMiddleware extends CoreMiddleware
             }
 
             //如果存在数据签名
-            if ($authParams !== false) {
+            if ($forceCheckAuth) {
                 data_set($requestBody,'auth', $authParams);
                 $checkAuthParamExist = ["signature","appId","timestamp","nonce"];
                 array_map(function ($paramName) use ($authParams) {
