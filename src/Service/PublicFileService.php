@@ -21,6 +21,12 @@ class PublicFileService
 {
     public function publicRootPath()
     {
+        //如果指定了特殊的public_root_path,则使用指定的路径
+        $publicRootPath = config('hyperf-common.upload.local.public_root_path');
+        if (!empty($publicRootPath)) {
+            return $publicRootPath;
+        }
+        //否则使用server.settings.document_root
         return config('server.settings.document_root');
     }
 

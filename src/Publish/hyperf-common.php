@@ -88,6 +88,7 @@ return [
             'common_dir' => env('LOCAL_COMMON_DIR', '/upload/common'),//通用的文件上传目录
             'image_dir' => env('LOCAL_IMAGE_DIR', '/upload/image'),//本地图片路径，位于server.settings.document_root配置目录之下
             'url_prefix' => env('LOCAL_IMAGE_URL_PREFIX',''),//当上传到本地的时候，拼接的图片路径
+            'public_root_path' => env('LOCAL_PUBLIC_ROOT_PATH',''),//指定特殊的public_root_path,否则使用server.settings.document_root配置
         ],
         'qiniu' => [
             'token_ttl' => env('QINIU_TOKEN_TTL', 3600),//获取qiniu访问token的过期时间
