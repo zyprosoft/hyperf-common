@@ -98,7 +98,7 @@ class UploadController extends AbstractController
             }
             $localPublicUrl = config('hyperf-common.upload.local.url_prefix');
 
-            $fileRename = Carbon::now()->getTimestamp().'.'.$file->getExtension();
+            $fileRename = Carbon::now()->getTimestampMs().'.'.$file->getExtension();
             $result = $this->moveFileToPublic('upload', $localDir, $fileRename);
             if (!$result) {
                 throw new HyperfCommonException(ErrorCode::SYSTEM_ERROR_UPLOAD_MOVE_FILE_FAIL,"upload file move fail!");
