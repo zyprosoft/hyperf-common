@@ -5,7 +5,7 @@
  * @link     https://topicq.icodefuture.com
  * @document https://topicq.icodefuture.com
  * @contact  1003081775@qq.com;微信:zyprosoft
- * @Company  吉安码动未来信息科技有限公司
+ * @Company  iCodeFuture
  * @license  GPL
  */
 
