@@ -147,7 +147,7 @@ abstract class AbstractController
 
     /**
      * 返回成功响应
-     * @param array $result
+     * @param mixed $result
      * @return \Psr\Http\Message\ResponseInterface
      */
     protected function success($result = [])

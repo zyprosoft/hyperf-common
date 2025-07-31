@@ -223,8 +223,10 @@ class AppCoreMiddleware extends CoreMiddleware
             if ($forceCheckAuth && !isset($authValues)) {
                 throw  new HyperfCommonException(ErrorCode::ZGW_REQUEST_BODY_ERROR, "zgw force auth need param auth!");
             }
-            $authParams = json_decode($authValues, true);
-            if ($forceCheckAuth && $authParams === false) {
+            if(isset($authValues)) {
+                $authParams = json_decode($authValues, true);
+            }
+            if ($forceCheckAuth && !isset($authParams)) {
                 Log::error("upload request decode auth param fail!");
                 throw  new HyperfCommonException(ErrorCode::ZGW_REQUEST_BODY_ERROR, "zgw force auth need param auth!");
             }

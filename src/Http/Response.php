@@ -95,6 +95,11 @@ class Response
         return  $responseInfo;
     }
 
+    /**
+     * 返回成功响应
+     * @param mixed $data
+     * @return \Psr\Http\Message\ResponseInterface
+     */
     public function success($data = []): PsrResponseInterface
     {
         //是不是自己组装了逻辑层错误结果返回
