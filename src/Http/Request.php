@@ -53,6 +53,15 @@ class Request extends FormRequest
     }
 
     /**
+     * 是否Callback请求
+     * @return bool
+     */
+    public function isCallback()
+    {
+        return !empty($this->getHeaderLine(Constants::ZYPROSOFT_CALLBACK));
+    }
+
+    /**
      * 是不是上传请求
      * @return bool
      */

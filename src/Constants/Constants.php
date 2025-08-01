@@ -27,6 +27,9 @@ class Constants
     //框架请求处理识别为上传请求的处理
     const ZYPROSOFT_UPLOAD = "ZYProSoft-Upload";
 
+    //框架请求处理识别为callback请求的处理
+    const ZYPROSOFT_CALLBACK = "ZYProSoft-Callback";
+
     //上传文件系统使用本地标记
     const UPLOAD_SYSTEM_TYPE_LOCAL = 'local';
 

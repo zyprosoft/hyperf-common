@@ -14,6 +14,7 @@ namespace ZYProSoft\Middleware;
 
 use Hyperf\Contract\ConfigInterface;
 use Hyperf\Utils\Arr;
+use Hyperf\Utils\Str;
 use Psr\Container\ContainerInterface;
 use ZYProSoft\Constants\Constants;
 use ZYProSoft\Constants\ErrorCode;
@@ -55,44 +56,13 @@ class AppCoreMiddleware extends CoreMiddleware
         $path = $request->getUri()->getPath();
         Log::info("request path:".$path);
 
-        //识别微信请求
-        if ($path == '/weixin') {
-
-            Log::info("request headers:".json_encode($request->getHeaders()));
-            if (strtoupper($request->getMethod()) == 'POST') {
-                if ($request->getHeaderLine("content-type") == "text/xml" && isset($request->getParsedBody()["MsgType"])) {
-                    return $this->modifyRequestWithPath($request, "/weixin/receiveMessage");
-                }
-            }
-
-            //是不是校验响应的请求
-            if (strtoupper($request->getMethod()) == 'GET') {
-                $queryParam = $request->getQueryParams();
-                if (isset($queryParam["signature"]) && isset($queryParam["echostr"]) && isset($queryParam["timestamp"]) && isset($queryParam["nonce"])) {
-                    Log::info("find weixin check response request!");
-                    return  $this->modifyRequestWithPath($request, "/weixin/checkResponse");
-                }
-            }
-        }
-
-        //拦截微信支付的通知
-        if ($path == '/wxpay/notify') {
-            Log::info("wxpay notify request headers:".json_encode($request->getHeaders()));
-            if (strtoupper($request->getMethod()) == 'POST') {
-                if ($request->getHeaderLine("content-type") == "text/xml") {
-                    return $this->modifyRequestWithPath($request, "/wxpay/receiveNotify");
-                }
-            }
-        }
-
-        //七牛的审核通知回调
-        if($path == '/qiniu/notify') {
-            Log::info("qiniu notify request headers:".json_encode($request->getHeaders()));
-            if (strtoupper($request->getMethod()) == 'POST') {
-                if ($request->getHeaderLine("content-type") == "text/xml") {
-                    return $this->modifyRequestWithPath($request, "/qiniu/notify");
-                }
-            }
+        //识别callback请求
+        if (Str::startsWith($path, '/callback')) {
+            //去掉callback，将后续的三段作为路径
+            $path = Str::after($path, '/callback');
+            //在头部加入Callback标记
+            $request = $request->withAddedHeader(Constants::ZYPROSOFT_CALLBACK, "1");
+            return $this->modifyRequestWithPath($request, $path);
         }
 
         return false;
