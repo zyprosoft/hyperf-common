@@ -140,7 +140,7 @@ class CaptchaService
         $phrase = $this->cache->get($cacheKey);
         if (is_null($phrase)) {
             $this->asyncClear($cacheKey);
-            throw new HyperfCommonException(ErrorCode::SYSTEM_ERROR_CAPTCHA_EXPIRED);
+            throw new HyperfCommonException(ErrorCode::SYSTEM_ERROR_CAPTCHA_EXPIRED, "验证码已过期!");
         }
 
         Log::info("input:$input phrase:$phrase");
@@ -148,11 +148,11 @@ class CaptchaService
         $isStrictMode = config('hyperf-common.captcha.strict');
 
         if ($isStrictMode && $phrase !== $input) {
-            throw new HyperfCommonException(ErrorCode::SYSTEM_ERROR_CAPTCHA_INVALIDATE);
+            throw new HyperfCommonException(ErrorCode::SYSTEM_ERROR_CAPTCHA_INVALIDATE, "验证码输入错误!");
         }
 
         if (Str::lower($phrase) !== Str::lower($input)) {
-            throw new HyperfCommonException(ErrorCode::SYSTEM_ERROR_CAPTCHA_INVALIDATE);
+            throw new HyperfCommonException(ErrorCode::SYSTEM_ERROR_CAPTCHA_INVALIDATE, "验证码输入错误!");
         }
 
         $this->asyncClear($cacheKey);
