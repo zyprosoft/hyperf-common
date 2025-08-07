@@ -54,7 +54,10 @@
     },
     "config": {
         "sort-packages": true,
-        "secure-http": false
+        "secure-http": false,
+        "allow-plugins": {
+            "easywechat-composer/easywechat-composer": true
+        }
     },
     "scripts": {
         "test": "co-phpunit -c phpunit.xml --colors=always",

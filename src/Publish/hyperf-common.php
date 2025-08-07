@@ -55,7 +55,9 @@ return [
         'strict' => env('CAPTCHA_STRICT', false),//验证码是否严格模式，区分大小写输入
         'ttl' => env('CAPTCHA_TTL', 600), //验证码有效时间
         'prefix' => env('CAPTCHA_PREFIX', 'cpt'), //缓存前缀
-        'dirname' => env('CAPTCHA_DIRNAME', '/captcha') //存储目录
+        'dirname' => env('CAPTCHA_DIRNAME', '/captcha'), //存储目录
+        'length' => env('CAPTCHA_LENGTH', 4), //验证码长度，默认4位
+        'charset' => env('CAPTCHA_CHARSET', '0123456789'), //验证码字符集，默认纯数字
     ],
     'cors' => [
         'enable_cross_origin' => env('CORS_ENABLE_CORS_ORIGIN', true), //是否开启跨域限制

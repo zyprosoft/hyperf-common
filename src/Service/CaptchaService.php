@@ -18,6 +18,7 @@ use Hyperf\Utils\Str;
 use Psr\SimpleCache\CacheInterface;
 use ZYProSoft\Exception\HyperfCommonException;
 use Gregwar\Captcha\CaptchaBuilder;
+use Gregwar\Captcha\PhraseBuilder;
 use Hyperf\Di\Annotation\Inject;
 use ZYProSoft\Constants\ErrorCode;
 use ZYProSoft\Log\Log;
@@ -67,6 +68,16 @@ class CaptchaService
         return config('hyperf-common.captcha.dirname');
     }
 
+    private function length()
+    {
+        return config('hyperf-common.captcha.length', 4);
+    }
+
+    private function charset()
+    {
+        return config('hyperf-common.captcha.charset', '0123456789');
+    }
+
     protected function driver()
     {
         return $this->driverFactory->get('default');
@@ -98,7 +109,9 @@ class CaptchaService
      */
     public function get()
     {
-        $builder = new CaptchaBuilder();
+        // 创建自定义的短语生成器，支持配置长度和字符集
+        $phraseBuilder = new PhraseBuilder($this->length(), $this->charset());
+        $builder = new CaptchaBuilder(null, $phraseBuilder);
         $builder->build();
         $phrase = $builder->getPhrase();
         $time = Carbon::now()->timestamp;
