@@ -74,6 +74,7 @@ class ServerCommand extends HyperfCommand
         $command = "cd $shellPath && bash service.sh -t $action -n $name";
 
         //绘制ASCII字符画
+        $this->line("");
         $this->line("=====================================================================", 'info');
         $this->line("  __  __       _                         _       _           _       ", 'info');
         $this->line(" |  \/  | ___ | |_ ___  _ __   __ _     / \   __| |_ __ ___ (_)_ __  ", 'info');
