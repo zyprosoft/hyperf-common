@@ -47,7 +47,7 @@ class ServerCommand extends HyperfCommand
     public function handle()
     {
         $action = $this->input->getArgument("action");
-        if (empty($action) || !in_array($action, ["stop","restart","start"])) {
+        if (empty($action) || !in_array($action, ["stop", "restart", "start"])) {
             $this->line("action type require in (stop,restart,start)");
         }
         $this->executeAction($action);
@@ -56,7 +56,7 @@ class ServerCommand extends HyperfCommand
     private function executeAction($action)
     {
         $name = env("APP_NAME");
-        $shellPath = BASE_PATH."/bin";
+        $shellPath = BASE_PATH . "/bin";
 
         //如果是停止服务，直接找到runtime的主进程pid，然后通过kill -9 的形式杀掉服务
         if ($action === "stop") {
@@ -72,19 +72,20 @@ class ServerCommand extends HyperfCommand
         }
 
         $command = "cd $shellPath && bash service.sh -t $action -n $name";
+
+        //绘制ASCII字符画
+        $this->line("=====================================================================", 'info');
+        $this->line("  __  __       _                         _       _           _       ", 'info');
+        $this->line(" |  \/  | ___ | |_ ___  _ __   __ _     / \   __| |_ __ ___ (_)_ __  ", 'info');
+        $this->line(" | |\/| |/ _ \| __/ _ \| '_ \ / _` |   / _ \ / _` | '_ ` _ \| | '_ \ ", 'info');
+        $this->line(" | |  | | (_) | || (_) | | | | (_| |  / ___ \ (_| | | | | | | | | | |", 'info');
+        $this->line(" |_|  |_|\___/ \__\___/|_| |_|\__, | /_/   \_\__,_|_| |_| |_|_|_| |_|", 'info');
+        $this->line("                                |___/                                ", 'info');
+        $this->line("=====================================================================", 'info');
+
         $result = system($command);
         if (!$result) {
             $this->line("run action $action fail!");
-        } else {
-            //绘制ASCII字符画
-            $this->line("=====================================================================");
-            $this->line("  __  __       _                         _       _           _       ");
-            $this->line(" |  \/  | ___ | |_ ___  _ __   __ _     / \   __| |_ __ ___ (_)_ __  ");
-            $this->line(" | |\/| |/ _ \| __/ _ \| '_ \ / _` |   / _ \ / _` | '_ ` _ \| | '_ \ ");
-            $this->line(" | |  | | (_) | || (_) | | | | (_| |  / ___ \ (_| | | | | | | | | | |");
-            $this->line(" |_|  |_|\___/ \__\___/|_| |_|\__, | /_/   \_\__,_|_| |_| |_|_|_| |_|");
-            $this->line("                                |___/                                ");
-            $this->line("=====================================================================");
         }
     }
 }
