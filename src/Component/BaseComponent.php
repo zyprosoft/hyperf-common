@@ -155,11 +155,13 @@ abstract class BaseComponent
 
     protected function get(string $uri, $options = [])
     {
+        $options = array_merge($this->options, $options);
         return $this->client->get($uri, $options);
     }
 
     protected function post(string $uri, $options = [])
     {
+        $options = array_merge($this->options, $options);
         return $this->client->post($uri, $options);
     }
 

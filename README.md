@@ -66,3 +66,11 @@ curl -d'{
     }
 }' http://127.0.0.1:9506
 ```
+本地开发：
+
+   docker run -d --name hyperf-common \
+   -v /Users/zyvincent/Desktop/iCodeFutureWorkSpace/hyperfCommon:/data/project \
+   -p 8001:8001 -it \
+   --privileged -u root \
+   --entrypoint /bin/sh \
+   hyperf/hyperf:8.0-alpine-v3.12-swoole
