@@ -43,15 +43,15 @@ class Log
     {
         $moduleName = '';
         foreach ($backTrace as $v) {
-            if (isset($v['file']) && stripos($v['file'],'CoreMiddleware.php')) {
-                $tmp = array_reverse(explode('\\',trim($v['class'])));
-                if (substr(strtolower($tmp[0]),-10) == 'controller') {
-                    $module = str_replace('controller','',strtolower($tmp[1]));
-                    $class = str_replace('controller','',strtolower($tmp[0]));
+            if (isset($v['file']) && stripos($v['file'], 'CoreMiddleware.php')) {
+                $tmp = array_reverse(explode('\\', trim($v['class'])));
+                if (substr(strtolower($tmp[0]), -10) == 'controller') {
+                    $module = str_replace('controller', '', strtolower($tmp[1]));
+                    $class = str_replace('controller', '', strtolower($tmp[0]));
                     $function = $v['function'];
-                    $moduleName = $class.'.'.$function;
+                    $moduleName = $class . '.' . $function;
                     if ($module) {
-                        $moduleName = $module.'.'.$moduleName;
+                        $moduleName = $module . '.' . $moduleName;
                     }
                     break;
                 }
@@ -62,11 +62,11 @@ class Log
                 if (ApplicationContext::getContainer()->has(RequestInterface::class)) {
                     $request = ApplicationContext::getContainer()->get(RequestInterface::class);
                     $uri = $request->getUri()->getPath();
-                    $moduleName = str_replace('/','.',ltrim($uri,'/'));
+                    $moduleName = str_replace('/', '.', ltrim($uri, '/'));
                 }
             }
         }
-        $moduleName = $moduleName??'system';
+        $moduleName = $moduleName ?? 'system';
         return $moduleName;
     }
 
@@ -88,8 +88,7 @@ class Log
 
         $logger = self::logger($group);
 
-        switch ($level)
-        {
+        switch ($level) {
             case Logger::INFO:
                 $logger->info($message);
                 break;
@@ -143,20 +142,22 @@ class Log
         $locationInfo = array();
         if (Coroutine::inCoroutine()) {
             $trace = \Swoole\Coroutine::getBackTrace();
-        }else{
+        } else {
             $trace = debug_backtrace();
         }
         $prevHop = null;
         $hop = array_pop($trace);
-        while($hop !== null) {
-            if(isset($hop['class'])) {
+        while ($hop !== null) {
+            if (isset($hop['class'])) {
                 $parentClass = get_parent_class($hop['class']);
                 if ($parentClass === false) {
                     $parentClass = '';
                 }
                 $className = strtolower($hop['class']);
-                if(!empty($className) and ($className == 'zyprosoft\log\log' or
-                        strtolower($parentClass) == 'zyprosoft\log\log')) {
+                if (
+                    !empty($className) and ($className == 'zyprosoft\log\log' or
+                        strtolower($parentClass) == 'zyprosoft\log\log')
+                ) {
                     $locationInfo['line'] = $hop['line'];
                     $locationInfo['file'] = $hop['file'];
                     break;
@@ -166,18 +167,20 @@ class Log
             $hop = array_pop($trace);
         }
         $locationInfo['class'] = isset($prevHop['class']) ? $prevHop['class'] : 'main';
-        if(isset($prevHop['function']) and
+        if (
+            isset($prevHop['function']) and
             $prevHop['function'] !== 'include' and
             $prevHop['function'] !== 'include_once' and
             $prevHop['function'] !== 'require' and
-            $prevHop['function'] !== 'require_once') {
+            $prevHop['function'] !== 'require_once'
+        ) {
 
             $locationInfo['function'] = $prevHop['function'];
         } else {
             $locationInfo['function'] = 'main';
         }
 
-        return $locationInfo['file']."({$locationInfo['line']}) || {$locationInfo['function']}() || $message";
+        return $locationInfo['file'] . "({$locationInfo['line']}) || {$locationInfo['function']}() || $message";
     }
 
     public static function req($msg, $level = Logger::INFO)
@@ -185,41 +188,41 @@ class Log
         self::log($msg, $level, 'request');
     }
 
-    public static function task($msg , $level = Logger::INFO)
+    public static function task($msg, $level = Logger::INFO)
     {
         self::log($msg, $level, 'task');
     }
 
-    public static function debug($msg)
+    public static function debug($msg, ...$args)
     {
-        self::log($msg, Logger::DEBUG);
+        self::log(empty($args) ? $msg : sprintf($msg, ...$args), Logger::DEBUG);
     }
-    public static function info($msg)
+    public static function info($msg, ...$args)
     {
-        self::log($msg,Logger::INFO);
+        self::log(empty($args) ? $msg : sprintf($msg, ...$args), Logger::INFO);
     }
-    public static function warning($msg)
+    public static function warning($msg, ...$args)
     {
-        self::log($msg,Logger::WARNING);
+        self::log(empty($args) ? $msg : sprintf($msg, ...$args), Logger::WARNING);
     }
-    public static function notice($msg)
+    public static function notice($msg, ...$args)
     {
-        self::log($msg, Logger::NOTICE);
+        self::log(empty($args) ? $msg : sprintf($msg, ...$args), Logger::NOTICE);
     }
-    public static function error($msg)
+    public static function error($msg, ...$args)
     {
-        self::log($msg,Logger::ERROR);
+        self::log(empty($args) ? $msg : sprintf($msg, ...$args), Logger::ERROR);
     }
-    public static function critical($msg)
+    public static function critical($msg, ...$args)
     {
-        self::log($msg,Logger::CRITICAL);
+        self::log(empty($args) ? $msg : sprintf($msg, ...$args), Logger::CRITICAL);
     }
-    public static function alert($msg)
+    public static function alert($msg, ...$args)
     {
-        self::log($msg,Logger::ALERT);
+        self::log(empty($args) ? $msg : sprintf($msg, ...$args), Logger::ALERT);
     }
-    public static function emergency($msg)
+    public static function emergency($msg, ...$args)
     {
-        self::log($msg,Logger::EMERGENCY);
+        self::log(empty($args) ? $msg : sprintf($msg, ...$args), Logger::EMERGENCY);
     }
 }
