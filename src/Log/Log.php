@@ -193,36 +193,54 @@ class Log
         self::log($msg, $level, 'task');
     }
 
-    public static function debug($msg, ...$args)
+    /**
+     * 将消息与上下文数据组合
+     */
+    private static function formatMessage(string $msg, array $context): string
     {
-        self::log(empty($args) ? $msg : sprintf($msg, ...$args), Logger::DEBUG);
+        if (empty($context)) {
+            return $msg;
+        }
+        return $msg . ' || ' . json_encode($context, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
     }
-    public static function info($msg, ...$args)
+
+    public static function debug(string $msg, array $context = [])
     {
-        self::log(empty($args) ? $msg : sprintf($msg, ...$args), Logger::INFO);
+        self::log(self::formatMessage($msg, $context), Logger::DEBUG);
     }
-    public static function warning($msg, ...$args)
+
+    public static function info(string $msg, array $context = [])
     {
-        self::log(empty($args) ? $msg : sprintf($msg, ...$args), Logger::WARNING);
+        self::log(self::formatMessage($msg, $context), Logger::INFO);
     }
-    public static function notice($msg, ...$args)
+
+    public static function warning(string $msg, array $context = [])
     {
-        self::log(empty($args) ? $msg : sprintf($msg, ...$args), Logger::NOTICE);
+        self::log(self::formatMessage($msg, $context), Logger::WARNING);
     }
-    public static function error($msg, ...$args)
+
+    public static function notice(string $msg, array $context = [])
     {
-        self::log(empty($args) ? $msg : sprintf($msg, ...$args), Logger::ERROR);
+        self::log(self::formatMessage($msg, $context), Logger::NOTICE);
     }
-    public static function critical($msg, ...$args)
+
+    public static function error(string $msg, array $context = [])
     {
-        self::log(empty($args) ? $msg : sprintf($msg, ...$args), Logger::CRITICAL);
+        self::log(self::formatMessage($msg, $context), Logger::ERROR);
     }
-    public static function alert($msg, ...$args)
+
+    public static function critical(string $msg, array $context = [])
     {
-        self::log(empty($args) ? $msg : sprintf($msg, ...$args), Logger::ALERT);
+        self::log(self::formatMessage($msg, $context), Logger::CRITICAL);
     }
-    public static function emergency($msg, ...$args)
+
+    public static function alert(string $msg, array $context = [])
     {
-        self::log(empty($args) ? $msg : sprintf($msg, ...$args), Logger::EMERGENCY);
+        self::log(self::formatMessage($msg, $context), Logger::ALERT);
+    }
+
+    public static function emergency(string $msg, array $context = [])
+    {
+        self::log(self::formatMessage($msg, $context), Logger::EMERGENCY);
     }
 }
