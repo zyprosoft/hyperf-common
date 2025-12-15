@@ -65,9 +65,11 @@ class AppCoreMiddleware extends CoreMiddleware
             return $this->modifyRequestWithPath($request, $path);
         }
 
-        //识别swagger页面请求，直接返回
-        if (Str::startsWith($path, '/swagger')) {
-            return $request;
+        $excludePaths = explode(';', env('ZGW_EXCLUDE_PATHS', '/mcp;/swagger'));
+        foreach ($excludePaths as $excludePath) {
+            if (Str::startsWith($path, $excludePath)) {
+                return $request;
+            }
         }
 
         return false;

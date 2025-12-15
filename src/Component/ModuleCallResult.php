@@ -54,7 +54,7 @@ class ModuleCallResult
     {
         if (!$this->isSuccess()) {
             throw new HyperfCommonException(ErrorCode::MODULE_CALL_FAIL, "module call fail with code({$this->code}) message({$this->message})");
-        }else{
+        } else {
             return $this->data;
         }
     }
@@ -62,5 +62,20 @@ class ModuleCallResult
     public function isSuccess()
     {
         return $this->code == 0;
+    }
+
+    public function getData(): array
+    {
+        return $this->data;
+    }
+
+    public function getCode(): int
+    {
+        return $this->code;
+    }
+
+    public function getMessage(): string
+    {
+        return $this->message;
     }
 }

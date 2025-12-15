@@ -22,10 +22,10 @@ if (isset($zgwSecretList)) {
             $itemArray = explode('&', $item);
             if (count($itemArray) == 2) {
                 $appSecretList[$itemArray[0]] = $itemArray[1];
-            }else{
+            } else {
                 Log::error('zgw secret item invalidate & explode count over 2!');
             }
-        }else{
+        } else {
             Log::error('zgw secret item invalidate & not found!');
         }
     }, $zgwSecretList);
@@ -34,14 +34,14 @@ if (isset($zgwSecretList)) {
 //设置跨域白名单
 $corsDomainList = env('CORS_ORIGIN_LIST');//跨域白名单http://localhost:8081
 $appCorsDomainList = [];
-if(isset($corsDomainList)) {
+if (isset($corsDomainList)) {
     $appCorsDomainList = explode(';', $corsDomainList);
 }
 
 //设置限频接口白名单
 $rateLimitWhiteList = env('RATE_LIMIT_WHITE_LIST');//频率限制白名单接口 eg. /weixin;/admin*
 $appRateLimitWhiteList = [];
-if(isset($rateLimitWhiteList)) {
+if (isset($rateLimitWhiteList)) {
     $appRateLimitWhiteList = explode(';', $rateLimitWhiteList);
 }
 
@@ -50,6 +50,7 @@ return [
         'force_auth' => env('ZGW_FORCE_AUTH', false),//强制校验签名,开启后ZGW协议必须带签名参数访问
         'sign_ttl' => env('ZGW_SIGN_TTL', 10),//签名有效时间
         'config_list' => $appSecretList,//密钥对列表 eg. test&abcdefg;test1&abcdefg
+        'exclude_paths' => env('ZGW_EXCLUDE_PATHS', '/mcp;/swagger'),//不需要走ZGW协议的路径, 使用这些头的路径直接放开
     ],
     'captcha' => [
         'strict' => env('CAPTCHA_STRICT', false),//验证码是否严格模式，区分大小写输入
@@ -78,19 +79,19 @@ return [
             'auth' => env('MAIL_SMTP_AUTH', true), //smtp是否需要鉴权
             'username' => env('MAIL_SMTP_USER_NAME', ''),//qq邮箱账号,eg. 1003081775@qq.com;微信:zyprosoft
             'password' => env('MAIL_SMTP_PASSWORD', ''),//qq邮箱申请的授权密码
-            'port' => env('MAIL_SMTP_PORT','465'), //qq邮箱经测试是465端口+ssl协议有效果
-            'secure' => env('MAIL_SMTP_SECURE','ssl') //smtp通信协议ssl或者tls
+            'port' => env('MAIL_SMTP_PORT', '465'), //qq邮箱经测试是465端口+ssl协议有效果
+            'secure' => env('MAIL_SMTP_SECURE', 'ssl') //smtp通信协议ssl或者tls
         ]
     ],
     'upload' => [
         'system_type' => env('UPLOAD_STORE_TYPE', 'local'), //使用上传的类型，对应下面的配置的key，如本地使用local,七牛云使用qiniu
-        'max_file_size' => env('UPLOAD_MAX_FILE_SIZE', 1024*1024*5),//单位字节，默认5M
+        'max_file_size' => env('UPLOAD_MAX_FILE_SIZE', 1024 * 1024 * 5),//单位字节，默认5M
         'file_type_limit' => env('UPLOAD_TYPE_LIMIT', "*"),//用英文分号进行分割的image/jpeg;image/jpg;image/*全匹配图片,*为全匹配
         'local' => [
             'common_dir' => env('LOCAL_COMMON_DIR', '/upload/common'),//通用的文件上传目录
             'image_dir' => env('LOCAL_IMAGE_DIR', '/upload/image'),//本地图片路径，位于server.settings.document_root配置目录之下
-            'url_prefix' => env('LOCAL_IMAGE_URL_PREFIX',''),//当上传到本地的时候，拼接的图片路径
-            'public_root_path' => env('LOCAL_PUBLIC_ROOT_PATH',''),//指定特殊的public_root_path,否则使用server.settings.document_root配置
+            'url_prefix' => env('LOCAL_IMAGE_URL_PREFIX', ''),//当上传到本地的时候，拼接的图片路径
+            'public_root_path' => env('LOCAL_PUBLIC_ROOT_PATH', ''),//指定特殊的public_root_path,否则使用server.settings.document_root配置
         ],
         'qiniu' => [
             'token_ttl' => env('QINIU_TOKEN_TTL', 3600),//获取qiniu访问token的过期时间
