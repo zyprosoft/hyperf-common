@@ -65,7 +65,7 @@ class AppCoreMiddleware extends CoreMiddleware
             return $this->modifyRequestWithPath($request, $path);
         }
 
-        $excludePaths = explode(';', env('ZGW_EXCLUDE_PATHS', '/mcp;/swagger'));
+        $excludePaths = $this->config->get('hyperf-common.zgw.exclude_paths', ['/mcp', '/swagger']);
         foreach ($excludePaths as $excludePath) {
             if (Str::startsWith($path, $excludePath)) {
                 return $request;
